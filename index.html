@@ -4,7 +4,7 @@
   <title>Dual Map Editor</title>
   <meta charset="utf-8">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@geoman-io/leaflet-geoman-free@2.11.4/dist/leaflet-geoman.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@geoman-io/leaflet-geoman-free@2.14.1/dist/leaflet-geoman.css">
   <style>
     body { margin: 0; display: flex; height: 100vh; }
     #map1, #map2 { flex: 1; }
@@ -21,11 +21,10 @@
 <div id="map2"></div>
 <div id="toolbar">
   <button onclick="exportGeoJSON()">Export GeoJSON</button>
-  <button onclick="clearAll()">Clear</button>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@geoman-io/leaflet-geoman-free@2.11.4/dist/leaflet-geoman.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@geoman-io/leaflet-geoman-free@2.14.1/dist/leaflet-geoman.min.js"></script>
 <script>
 // --- Dual map setup ---
 const center = [50.33323, 6.94309]; // Nürburgring
