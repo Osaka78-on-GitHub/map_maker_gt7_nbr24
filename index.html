@@ -65,7 +65,7 @@ map2.on('move', () => sync(map2, map1));
   map2.pm.addControls({ position: 'topleft' });   
   
 // --- Tag on draw ---
-map2.on('pm:drawend', (e) => {
+map2.on('pm:create', (e) => {
   e.layers.forEach(layer => {
     const tag = prompt('Tag this feature:');
     layer.options.tag = tag || '';
