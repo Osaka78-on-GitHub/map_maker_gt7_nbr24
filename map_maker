@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dual Map Editor</title>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@geoman-io/leaflet-geoman-free@2.11.4/dist/leaflet-geoman.css">
+  <style>
+    body { margin: 0; display: flex; height: 100vh; }
+    #map1, #map2 { flex: 1; }
+    #toolbar {
+      position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%);
+      z-index: 1000; background: #fff; padding: 6px 12px; border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.3); display: flex; gap: 8px;
+    }
+    #toolbar button { padding: 6px 14px; cursor: pointer; }
+  </style>
+</head>
+<body>
+<div id="map1"></div>
+<div id="map2"></div>
+<div id="toolbar">
+  <button onclick="exportGeoJSON()">Export GeoJSON</button>
+  <button onclick="clearAll()">Clear</button>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@geoman-io/leaflet-geoman-free@2.11.4/dist/leaflet-geoman.min.js"></script>
+<script>
+// --- Dual map setup ---
+const center = [50.3356, 7.2178]; // Nürburgring
+const zoom = 12;
+
+const map1 = L.map('map1').setView(center, zoom);
+const map2 = L.map('map2').setView(center, zoom);
+
+// OSM
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© OSM'
+}).addTo(map1);
+
+// NBR Aerial Image
+L.tileLayer.wms('https://www.geoportal.rlp.de/mapbender/php/wms.php?layer_id=61683&SERVICE=WMS&VERSION=1.1.1', {
+  layers: 'DOP20',
+  format: 'image/jpeg',
+  attribution: '© RLP DOP20'
+}).addTo(map2);   
+
+// Sync
+let syncing = false;
+function sync(from, to) {
+  if (syncing) return;
+  syncing = true;
+  to.setView(from.getCenter(), from.getZoom(), { animate: false });
+  syncing = false;
+}
+map1.on('move', () => sync(map1, map2));
+map2.on('move', () => sync(map2, map1));
+
+// --- Geoman on map1 (OSM side) ---
+// Geoman adds its own toolbar automatically
+// Draw on map1, see the result on both (they're synced)
+
+// Also add a geoman layer to map2 so you see edits on satellite too
+const geomanLayer2 = L.geoJSON(null, {
+  style: { color: '#ff0000', weight: 2, fillOpacity: 0.2 }
+}).addTo(map2);
+
+// Sync geoman edits to map2
+L.Geoman.on('drawcreated', (e) => {
+  geomanLayer2.addData(e.layers);
+});
+L.Geoman.on('drawedited', (e) => {
+  geomanLayer2.clearLayers();
+  geomanLayer2.addData(L.Geoman.getLayers());
+});
+L.Geoman.on('drawdeleted', () => {
+  geomanLayer2.clearLayers();
+  geomanLayer2.addData(L.Geoman.getLayers());
+});
+
+// --- Export ---
+function exportGeoJSON() {
+  const geojson = L.Geoman.getGeoJSON();
+  const blob = new Blob([JSON.stringify(geojson, null, 2)], { type: 'application/geo+json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'map_annotations.geojson';
+  a.click();
+}
+
+function clearAll() {
+  L.Geoman.deleteAll();
+  geomanLayer2.clearLayers();
+}
+</script>
+</body>
+</html>   
