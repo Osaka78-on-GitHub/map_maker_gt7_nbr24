@@ -28,8 +28,8 @@
 <script src="https://cdn.jsdelivr.net/npm/@geoman-io/leaflet-geoman-free@2.11.4/dist/leaflet-geoman.min.js"></script>
 <script>
 // --- Dual map setup ---
-const center = [50.3356, 7.2178]; // Nürburgring
-const zoom = 12;
+const center = [50.33323, 6.94309]; // Nürburgring
+const zoom = 15;
 
 const map1 = L.map('map1').setView(center, zoom);
 const map2 = L.map('map2').setView(center, zoom);
@@ -40,8 +40,8 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map1);
 
 // NBR Aerial Image
-L.tileLayer.wms('https://www.geoportal.rlp.de/mapbender/php/wms.php?layer_id=61683&SERVICE=WMS&VERSION=1.1.1', {
-  layers: 'DOP20',
+L.tileLayer.wms('https://geo4.service24.rlp.de/wms/rp_dop20.fcgi', {
+  layers: 'rp_dop20',
   format: 'image/jpeg',
   attribution: '© RLP DOP20'
 }).addTo(map2);   
@@ -57,28 +57,9 @@ function sync(from, to) {
 map1.on('move', () => sync(map1, map2));
 map2.on('move', () => sync(map2, map1));
 
-// --- Geoman on map1 (OSM side) ---
-// Geoman adds its own toolbar automatically
-// Draw on map1, see the result on both (they're synced)
-
-// Also add a geoman layer to map2 so you see edits on satellite too
-const geomanLayer2 = L.geoJSON(null, {
-  style: { color: '#ff0000', weight: 2, fillOpacity: 0.2 }
-}).addTo(map2);
-
-// Sync geoman edits to map2
-L.Geoman.on('drawcreated', (e) => {
-  geomanLayer2.addData(e.layers);
-});
-L.Geoman.on('drawedited', (e) => {
-  geomanLayer2.clearLayers();
-  geomanLayer2.addData(L.Geoman.getLayers());
-});
-L.Geoman.on('drawdeleted', () => {
-  geomanLayer2.clearLayers();
-  geomanLayer2.addData(L.Geoman.getLayers());
-});
-
+// --- Geoman ---
+  L.control.geoman({ position: 'topleft' }).addTo(map2);
+  
 // --- Export ---
 function exportGeoJSON() {
   const geojson = L.Geoman.getGeoJSON();
