@@ -96,8 +96,13 @@ function save() {
 }
 
 map2.on('pm:create', (e) => {
-  const tag = prompt('Tag this feature:');
-  e.layer.options.tag = tag || '';
+   const input = prompt('Tags (one per line, key=value):\n\nname=Kesselchen\ncamera=7\nbraking=yes') || '';
+  input.split('\n').forEach(line => {
+    const idx = line.indexOf('=');
+    if (idx > 0) {
+      e.layer.options[line.slice(0, idx).trim()] = line.slice(idx + 1).trim();
+    }
+  });
   save();
 });
 map2.on('pm:edit', save);
