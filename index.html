@@ -71,12 +71,12 @@ saved.forEach(item => {
     layer = L.polygon(item.geometry.coordinates[0].map(c => [c[1], c[0]]));
   }
   if (layer) {
-    layer.options.tag = item.properties.tag || '';
+    Object.assign(layer.options, item.properties);
     layer.addTo(map2);
     loadedLayers.push(layer);
   }
 });
-
+  
 // --- Save on every change ---
 function save() {
   const layers = map2.pm.getGeomanLayers();
@@ -90,10 +90,14 @@ function save() {
       const ll = layer.getLatLng();
       geometry = { type: 'Point', coordinates: [ll.lng, ll.lat] };
     }
-    return { type: 'Feature', properties: { tag: layer.options.tag || '' }, geometry };
+    const props = {};
+    Object.keys(layer.options).forEach(k => {
+      if (typeof layer.options[k] === 'string') props[k] = layer.options[k];
+    });
+    return { type: 'Feature', properties: props, geometry };
   });
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-}
+}   
 
 map2.on('pm:create', (e) => {
    const input = prompt('Tags (one per line, key=value):\n\nname=Kesselchen\ncamera=7\nbraking=yes') || '';
