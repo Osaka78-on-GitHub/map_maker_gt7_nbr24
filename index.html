@@ -31,8 +31,8 @@
 const center = [50.33323, 6.94309]; // Nürburgring
 const zoom = 15;
 
-const map1 = L.map('map1').setView(center, zoom);
-const map2 = L.map('map2').setView(center, zoom);
+const map1 = L.map('map1').setView(center, zoom, { maxZoom: 24 });
+const map2 = L.map('map2').setView(center, zoom, { maxZoom: 24 });
 
 // OSM
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
