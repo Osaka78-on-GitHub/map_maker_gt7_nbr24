@@ -122,7 +122,11 @@ function exportGeoJSON() {
       const ll = layer.getLatLng();
       geometry = { type: 'Point', coordinates: [ll.lng, ll.lat] };
     }
-    return { type: 'Feature', properties: { tag: layer.options.tag || '' }, geometry };
+    const props = {};
+    Object.keys(layer.options).forEach(k => {
+      if (typeof layer.options[k] === 'string') props[k] = layer.options[k];
+    });
+    return { type: 'Feature', properties: props, geometry };
   });
   const geojson = { type: 'FeatureCollection', features };
   const blob = new Blob([JSON.stringify(geojson, null, 2)], { type: 'application/geo+json' });
@@ -130,7 +134,7 @@ function exportGeoJSON() {
   a.href = URL.createObjectURL(blob);
   a.download = 'nbr_map.geojson';
   a.click();
-}   
+}  
 </script>
 </body>
 </html>   
