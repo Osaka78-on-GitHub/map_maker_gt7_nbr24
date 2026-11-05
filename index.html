@@ -21,6 +21,7 @@
 <div id="map2"></div>
 <div id="toolbar">
   <button onclick="exportGeoJSON()">Export GeoJSON</button>
+  <button onclick="editTags()">Edit Tags</button>   
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -109,32 +110,34 @@ map2.on('pm:create', (e) => {
   });
   save();
 });
-map2.on('pm:selectionchanged', (e) => {
-  if (e.layers.length === 1) {
-    const layer = e.layers[0];
-    const current = Object.entries(layer.options)
-      .filter(([k, v]) => typeof v === 'string' && v)
-      .map(([k, v]) => `${k}=${v}`)
-      .join('\n');
-
-    const input = prompt('Edit tags (key=value, one per line):\n\n' + (current || '(empty)'));
-    if (input === null) return; // cancelled
-
-    // Clear old string props
-    Object.keys(layer.options).forEach(k => {
-      if (typeof layer.options[k] === 'string') delete layer.options[k];
-    });
-
-    // Set new ones
-    input.split('\n').forEach(line => {
-      const idx = line.indexOf('=');
-      if (idx > 0) {
-        layer.options[line.slice(0, idx).trim()] = line.slice(idx + 1).trim();
-      }
-    });
-    save();
+function editTags() {
+  const selected = map2.pm.getGeomanLayers().filter(l => l.pm && l.pm._selected);
+  if (selected.length === 0) {
+    alert('Select a feature first (click it in edit mode).');
+    return;
   }
-});
+  const layer = selected[selected.length - 1];
+
+  const current = Object.entries(layer.options)
+    .filter(([k, v]) => typeof v === 'string' && v)
+    .map(([k, v]) => `${k}=${v}`)
+    .join('\n');
+
+  const input = prompt('Edit tags (key=value, one per line):\n\n' + (current || '(empty)'));
+  if (input === null) return;
+
+  Object.keys(layer.options).forEach(k => {
+    if (typeof layer.options[k] === 'string') delete layer.options[k];
+  });
+
+  input.split('\n').forEach(line => {
+    const idx = line.indexOf('=');
+    if (idx > 0) {
+      layer.options[line.slice(0, idx).trim()] = line.slice(idx + 1).trim();
+    }
+  });
+  save();
+}
 map2.on('pm:edit', save);
 map2.on('pm:remove', save);
 map2.on('pm:cut', save);
