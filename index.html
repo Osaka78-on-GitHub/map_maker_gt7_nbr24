@@ -20,6 +20,7 @@
 <div id="map1"></div>
 <div id="map2"></div>
 <div id="toolbar">
+  <button onclick="toggleOSM()">OSM</button>
   <button onclick="exportGeoJSON()">Export</button>
   <button onclick="togglePanel()">Tags</button>
 </div>
@@ -166,7 +167,16 @@ function deleteFeature(i) {
     renderTags();
   }
 }
-
+function toggleOSM() {
+  const m1 = document.getElementById('map1');
+  if (m1.style.display === 'none') {
+    m1.style.display = 'block';
+    m1.style.flex = '1';
+  } else {
+    m1.style.display = 'none';
+    map2.invalidateSize();
+  }
+}
 // --- Save ---
 function save() {
   const layers = map2.pm.getGeomanLayers();
