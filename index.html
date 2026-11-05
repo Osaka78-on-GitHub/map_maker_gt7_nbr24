@@ -43,6 +43,8 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 L.tileLayer.wms('https://geo4.service24.rlp.de/wms/rp_dop20.fcgi', {
   layers: 'rp_dop20',
   format: 'image/jpeg',
+  maxZoom: 24,
+  maxNativeZoom: 24,
   attribution: '© RLP DOP20'
 }).addTo(map2);   
 
