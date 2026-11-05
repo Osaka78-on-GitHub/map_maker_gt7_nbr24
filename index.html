@@ -62,9 +62,9 @@ map2.on('move', () => sync(map2, map1));
 // --- Geoman ---
 map2.pm.addControls({ position: 'topleft' });
 
+
 // --- Load saved data ---
-// --- Load saved data ---
-const STORAGE_KEY = 'nbr_map_data';
+
 const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
 
 saved.forEach(item => {
