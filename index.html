@@ -326,6 +326,31 @@ function exportGeoJSON() {
   a.download = 'nbr_map.geojson';
   a.click();
 }  
+// --- Live telemetry ---
+const ws = new WebSocket('ws://localhost:8765');
+const carMarker = L.circleMarker([0, 0], { radius: 6, color: '#ff0', fillOpacity: 0.9 }).addTo(map2);
+const carTrail = L.polyline([], { color: '#ff0', weight: 2, opacity: 0.6 }).addTo(map2);
+let trail = [];
+
+ws.onmessage = (e) => {
+  const d = JSON.parse(e.data);
+  // Convert track-local coords to lat/lng
+  // NBR origin (start/finish): approx 50.3356, 6.9431
+  // GT7 track coords are in meters, X=east, Y=north
+  const origin = { lat: 50.3356, lng: 6.9431 };
+  const lat = origin.lat + d.y / 111320;  // 1 deg lat ≈ 111320m
+  const lng = origin.lng + d.x / (111320 * Math.cos(origin.lat * Math.PI / 180));
+
+  carMarker.setLatLng([lat, lng]);
+  trail.push([lat, lng]);
+  if (trail.length > 5000) trail.shift();
+  carTrail.setLatLngs(trail);
+};
+
+ws.onclose = () => {
+  console.log('Telemetry disconnected');
+  setTimeout(() => location.reload(), 3000);
+};   
 </script>
 </body>
 </html>   
