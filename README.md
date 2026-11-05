@@ -5,6 +5,9 @@ Designed with assistance from the Brave Search AI assistant.
 Dual-panel map editor for annotating the Nürburgring (Nordschleife) using
 Rheinland-Pfalz DOP20 aerial imagery. Built with Leaflet + Geoman.
 
+## Demo
+https://osaka78-on-github.github.io/map_maker_gt7_nbr24/
+
 ## Files
 
 | File | Purpose |
