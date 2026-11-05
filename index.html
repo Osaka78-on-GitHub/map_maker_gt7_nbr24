@@ -58,7 +58,7 @@ map1.on('move', () => sync(map1, map2));
 map2.on('move', () => sync(map2, map1));
 
 // --- Geoman ---
-  L.control.geoman({ position: 'topleft' }).addTo(map2);
+  map2.pm.addControls({ position: 'topleft' });   
   
 // --- Export ---
 function exportGeoJSON() {
@@ -70,10 +70,7 @@ function exportGeoJSON() {
   a.click();
 }
 
-function clearAll() {
-  L.Geoman.deleteAll();
-  geomanLayer2.clearLayers();
-}
+
 </script>
 </body>
 </html>   
