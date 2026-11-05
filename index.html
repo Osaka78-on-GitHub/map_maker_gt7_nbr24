@@ -27,27 +27,21 @@
 <script src="https://cdn.jsdelivr.net/npm/@geoman-io/leaflet-geoman-free@2.14.1/dist/leaflet-geoman.min.js"></script>
 <script>
 // --- Dual map setup ---
-const center = [50.33323, 6.94309]; // Nürburgring
+const center = [50.33323, 6.94309];
 const zoom = 15;
+const STORAGE_KEY = 'nbr_map_data';
 
 const map1 = L.map('map1').setView(center, zoom, { maxZoom: 24 });
 const map2 = L.map('map2').setView(center, zoom, { maxZoom: 24 });
 
-// OSM
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 24,
-  maxNativeZoom: 24,
-  attribution: '© OSM'
+  maxZoom: 24, attribution: '© OSM'
 }).addTo(map1);
 
-// NBR Aerial Image
 L.tileLayer.wms('https://geo4.service24.rlp.de/wms/rp_dop20.fcgi', {
-  layers: 'rp_dop20',
-  format: 'image/jpeg',
-  maxZoom: 24,
-  maxNativeZoom: 24,
-  attribution: '© RLP DOP20'
-}).addTo(map2);   
+  layers: 'rp_dop20', format: 'image/jpeg',
+  maxZoom: 24, maxNativeZoom: 18, attribution: '© RLP DOP20'
+}).addTo(map2);
 
 // Sync
 let syncing = false;
@@ -61,17 +55,56 @@ map1.on('move', () => sync(map1, map2));
 map2.on('move', () => sync(map2, map1));
 
 // --- Geoman ---
-  map2.pm.addControls({ position: 'topleft' });   
-  
-// --- Tag on draw ---
-map2.on('pm:create', (e) => {
-  e.layers.forEach(layer => {
-    const tag = prompt('Tag this feature:');
-    layer.options.tag = tag || '';
-  });
+map2.pm.addControls({ position: 'topleft' });
+
+// --- Load saved data ---
+const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+const loadedLayers = [];
+
+saved.forEach(item => {
+  let layer;
+  if (item.geometry.type === 'Point') {
+    layer = L.marker([item.geometry.coordinates[1], item.geometry.coordinates[0]]);
+  } else if (item.geometry.type === 'LineString') {
+    layer = L.polyline(item.geometry.coordinates.map(c => [c[1], c[0]]));
+  } else if (item.geometry.type === 'Polygon') {
+    layer = L.polygon(item.geometry.coordinates[0].map(c => [c[1], c[0]]));
+  }
+  if (layer) {
+    layer.options.tag = item.properties.tag || '';
+    layer.addTo(map2);
+    loadedLayers.push(layer);
+  }
 });
 
-// --- Export ---
+// --- Save on every change ---
+function save() {
+  const layers = map2.pm.getGeomanLayers();
+  const data = layers.map(layer => {
+    let geometry;
+    if (layer instanceof L.Polygon) {
+      geometry = { type: 'Polygon', coordinates: [layer.getLatLngs()[0].map(p => [p.lng, p.lat])] };
+    } else if (layer instanceof L.Polyline) {
+      geometry = { type: 'LineString', coordinates: layer.getLatLngs().map(p => [p.lng, p.lat]) };
+    } else if (layer instanceof L.Marker) {
+      const ll = layer.getLatLng();
+      geometry = { type: 'Point', coordinates: [ll.lng, ll.lat] };
+    }
+    return { type: 'Feature', properties: { tag: layer.options.tag || '' }, geometry };
+  });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+map2.on('pm:create', (e) => {
+  const tag = prompt('Tag this feature:');
+  e.layer.options.tag = tag || '';
+  save();
+});
+map2.on('pm:edit', save);
+map2.on('pm:remove', save);
+map2.on('pm:cut', save);
+
+// --- Export (backup/share) ---
 function exportGeoJSON() {
   const layers = map2.pm.getGeomanLayers();
   const features = layers.map(layer => {
@@ -90,11 +123,9 @@ function exportGeoJSON() {
   const blob = new Blob([JSON.stringify(geojson, null, 2)], { type: 'application/geo+json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'map_annotations.geojson';
+  a.download = 'nbr_map.geojson';
   a.click();
-}
-
-
+}   
 </script>
 </body>
 </html>   
