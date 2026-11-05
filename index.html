@@ -36,6 +36,8 @@ const map2 = L.map('map2').setView(center, zoom, { maxZoom: 24 });
 
 // OSM
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 24,
+  maxNativeZoom: 24,
   attribution: '© OSM'
 }).addTo(map1);
 
