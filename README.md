@@ -1,3 +1,5 @@
+# WIP
+
 Designed with assistance from the Brave Search AI assistant.
 
 # Map Maker GT7 NBR24
@@ -34,7 +36,7 @@ Open `index.html` in a browser. No server needed.
 2. Settings → Pages → Deploy from branch → main → / (root)
 3. Open `https://<username>.github.io/<repo>/`
 
-## Telemetry Bridge (optional)
+## Telemetry Bridge (local machine only)
 
 Receives GT7 telemetry via UDP and streams it to the map as a live car dot.
 
