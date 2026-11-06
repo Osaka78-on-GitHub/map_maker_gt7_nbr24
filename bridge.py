@@ -117,4 +117,87 @@ def serve_http():
 	httpd.serve_forever()
 
 http_thread = threading.Thread(target=serve_http, daemon=True)
-htt   
+http_thread.start()
+
+# --- Relay config ---
+RELAY = config.get("relay", {}).get("url", "")
+if RELAY:
+	print(f"Guest mode — pushing to: {RELAY}")
+
+# --- Main loop ---
+async def main():
+	hb = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+	hb.settimeout(1)
+
+	sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+	sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+	sock.bind(('0.0.0.0', 33740))
+	sock.settimeout(1)
+
+	loop = asyncio.get_event_loop()
+
+	if RELAY:
+		async with websockets.connect(RELAY) as relay:
+			await relay.send(json.dumps({"type": "player", "name": "guest"}))
+			print(f"Connected to relay. Waiting for packets... (Ctrl+C to stop)")
+			while True:
+				for name, ip in PLAYSTATION.items():
+					try:
+						hb.sendto(b'B', (ip, 33739))
+					except:
+						pass
+				try:
+					data, addr = await loop.run_in_executor(None, sock.recvfrom, 65536)
+					plain = decrypt(data)
+					if plain:
+						x, y, z = struct.unpack_from('fff', plain, 0x04)
+						speed = struct.unpack_from('f', plain, 0x4C)[0]
+						console = "unknown"
+						for name, ip in PLAYSTATION.items():
+							if addr[0] == ip:
+								console = name
+						msg = json.dumps({"console": console, "x": x, "y": y, "z": z, "speed": speed})
+						await relay.send(msg)
+				except socket.timeout:
+					pass
+				except websockets.exceptions.ConnectionClosed:
+					print("Relay connection lost.")
+					return
+	else:
+		async with websockets.serve(ws_handler, '0.0.0.0', 8765):
+			print(f"Listening for telemetry from: {PLAYSTATION}")
+			print(f"WebSocket: ws://localhost:8765")
+			print(f"Map: http://localhost:8080")
+			print("Waiting for packets... (Ctrl+C to stop)")
+			webbrowser.open("http://localhost:8080/index.html")
+			while True:
+				for name, ip in PLAYSTATION.items():
+					try:
+						hb.sendto(b'B', (ip, 33739))
+					except:
+						pass
+				try:
+					data, addr = await loop.run_in_executor(None, sock.recvfrom, 65536)
+					plain = decrypt(data)
+					if plain:
+						x, y, z = struct.unpack_from('fff', plain, 0x04)
+						speed = struct.unpack_from('f', plain, 0x4C)[0]
+						console = "unknown"
+						for name, ip in PLAYSTATION.items():
+							if addr[0] == ip:
+								console = name
+						msg = json.dumps({"console": console, "x": x, "y": y, "z": z, "speed": speed})
+						if viewers:
+							await asyncio.wait_for(
+								asyncio.gather(*[v.send(msg) for v in viewers], return_exceptions=True),
+								timeout=0.1
+							)
+				except socket.timeout:
+					pass
+				except asyncio.TimeoutError:
+					pass
+
+try:
+	asyncio.run(main())
+except KeyboardInterrupt:
+	print("\nStopped.")
