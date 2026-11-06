@@ -232,7 +232,9 @@ function exportGeoJSON() {
 // --- Live telemetry ---
 let ws = null;
 try {
-  ws = new WebSocket('ws://localhost:8765');
+    const params = new URLSearchParams(window.location.search);
+  const relay = params.get('relay');
+  ws = new WebSocket(relay || 'ws://localhost:8765');   
   const cars = {};
   const colors = { ps5: '#ff0', ps4: '#0ff' };
 
