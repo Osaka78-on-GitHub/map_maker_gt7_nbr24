@@ -1,0 +1,19 @@
+# PlayStation IP address for GT7 Telemetry UDP feed
+# uncomment to add
+# any <name> allowed
+
+# [playstation.<name>]
+# ip = "<your playstation ip address>"
+
+# [playstation.ps4]
+# ip = "192.168.0.79"
+
+# [playstation.ps5]
+# ip = "192.168.0.78"
+
+# [playstation.random_name]
+# ip = "192.168.0.77"
+
+# [playstation."my random name"]
+# ip = "192.168.0.76"
+
