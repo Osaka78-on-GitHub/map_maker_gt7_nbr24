@@ -123,7 +123,7 @@ def start_relay(cf_path):
 		stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True
 	)
 	for line in cf_proc.stdout:
-		if "trycloudflare.com" in line:
+		if "trycloudflare.com" in line and "https://" in line:
 			return "wss://" + line.split("https://")[1].strip()
 	cf_proc.kill()
 	return None
