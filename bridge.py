@@ -4,6 +4,9 @@ import asyncio
 import json
 import os
 import subprocess
+import webbrowser
+import http.server
+import threading
 
 def check_deps():
 	deps = {
@@ -50,15 +53,11 @@ if bad:
 		print(f"Invalid IP for {name}: {PLAYSTATION[name]}")
 	exit(1)
 
-# Ping check (warning only, doesn't stop)
+# Ping check
 for name, ip in PLAYSTATION.items():
 	result = subprocess.run(["ping", "-c", "1", "-W", "1", ip], capture_output=True)
 	if result.returncode != 0:
 		print(f"WARNING: {name} at {ip} is not responding to ping")
-
-print(f"Listening for telemetry from: {PLAYSTATION}")
-print(f"WebSocket on port 8765")
-print("Waiting for packets... (Ctrl+C to stop)")
 
 # --- GT7 decryption ---
 KEY = b"Simulator Interface Packet GT7 ver 0.0"[:32]
@@ -75,59 +74,47 @@ def decrypt(data):
 		return None
 	return plain
 
-# --- WebSocket ---
-clients = set()
+# --- WebSocket (host: accepts players + viewers) ---
+viewers = set()
+players = set()
 
 async def ws_handler(ws):
-	clients.add(ws)
+	# First message from a player is {"type": "player", "name": "ps5"}
+	# Viewers just connect and wait
+	is_player = False
 	try:
-		async for _ in ws:
-			pass
+		first = await asyncio.wait_for(ws.recv(), timeout=2)
+		data = json.loads(first)
+		if data.get("type") == "player":
+			is_player = True
+			players.add(ws)
+			print(f"Player connected: {data.get('name')}")
+	except (asyncio.TimeoutError, json.JSONDecodeError):
+		pass
+
+	if not is_player:
+		viewers.add(ws)
+
+	try:
+		async for msg in ws:
+			if is_player:
+				# Player is pushing telemetry, broadcast to viewers
+				if viewers:
+					await asyncio.wait_for(
+						asyncio.gather(*[v.send(msg) for v in viewers], return_exceptions=True),
+						timeout=0.1
+					)
+	except:
+		pass
 	finally:
-		clients.discard(ws)
+		viewers.discard(ws)
+		players.discard(ws)
 
-# --- Main loop ---
-async def main():
-	hb = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-	hb.settimeout(1)
+# --- HTTP server (serves index.html) ---
+def serve_http():
+	handler = http.server.SimpleHTTPRequestHandler
+	httpd = http.server.HTTPServer(('127.0.0.1', 8080), handler)
+	httpd.serve_forever()
 
-	sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-	sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-	sock.bind(('0.0.0.0', 33740))
-	sock.settimeout(1)
-
-	loop = asyncio.get_event_loop()
-
-	async with websockets.serve(ws_handler, '0.0.0.0', 8765):
-		while True:
-			for name, ip in PLAYSTATION.items():
-				try:
-					hb.sendto(b'B', (ip, 33739))
-				except:
-					pass
-
-			try:
-				data, addr = await loop.run_in_executor(None, sock.recvfrom, 65536)
-				plain = decrypt(data)
-				if plain:
-					x, y, z = struct.unpack_from('fff', plain, 0x04)
-					speed = struct.unpack_from('f', plain, 0x4C)[0]
-					console = "unknown"
-					for name, ip in PLAYSTATION.items():
-						if addr[0] == ip:
-							console = name
-					msg = json.dumps({"console": console, "x": x, "y": y, "z": z, "speed": speed})
-					if clients:
-						await asyncio.wait_for(
-							asyncio.gather(*[c.send(msg) for c in clients]),
-							timeout=0.1
-						)
-			except socket.timeout:
-				pass
-			except asyncio.TimeoutError:
-				pass
-
-try:
-	asyncio.run(main())
-except KeyboardInterrupt:
-	print("\nStopped.")   
+http_thread = threading.Thread(target=serve_http, daemon=True)
+htt   
