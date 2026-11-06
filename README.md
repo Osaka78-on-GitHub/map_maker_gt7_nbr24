@@ -94,6 +94,15 @@ This is the big one. The Salsa20 key, packet sizes (296/316/344), IV masks (0xDE
 | **Chi-Ho, Beregoz** | Helped research packet variant C |
 | **ddm999** | Car and manufacturer ID database (gt7info) |
 
+## Credits
+
+- [Leaflet](https://leafletjs.com/) — BSD-2
+- [Geoman](https://github.com/geoman-io/leaflet-geoman-free) — MIT
+- [PySceneDetect](https://github.com/BruceDLight/Scenedetect) — BSD-3
+- GT7 UDP telemetry protocol — reverse-engineered by [Nenkai](https://github.com/Nenkai/PDTools), Bornhall, [MacManley](https://github.com/MacManley/gt7-udp), tarnheld, vwhitteron, Chi-Ho, Beregoz, and others. See [GTPlanet thread](https://www.gtplanet.net/forum/threads/gt7-is-compatible-with-motion-rig.410728/).
+- DOP20 imagery — [Rheinland-Pfalz Geoportal](https://www.geoportal.rlp.de)
+- Map editor designed with assistance from the Brave Search AI assistant   
+
 | What | Who |
 |------|-----|
 | DOP20 aerial imagery | State of :inlineEntity{type="inline_entity" conversation="09c5027d81fb71cdeb2681a4af1ec3e94920" name="Rheinland-Pfalz" about="German&#32;state" nonce="39e4f213f270cec83c49da035d624aa0" sig="ed1766ac99d11b46c3ba68c1c51f7113f9172dc041b4978c98e123d52db4f2d8"} Geoportal (government, freely available) |
