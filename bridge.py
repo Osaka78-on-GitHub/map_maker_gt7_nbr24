@@ -24,6 +24,12 @@ def check_deps():
 		print(f"Missing: pip install {' '.join(missing)}")
 		exit(1)
 
+	import websockets
+	v = tuple(int(x) for x in websockets.__version__.split('.')[:2])
+	if v < (10, 0):
+		print(f"websockets >= 10 required (you have {websockets.__version__}). To upgrade run: pip install --user --upgrade websockets")   
+		exit(1)
+
 check_deps()
 
 import tomli
@@ -179,6 +185,7 @@ async def main():
 				try:
 					data, addr = await loop.run_in_executor(None, sock.recvfrom, 65536)
 					plain = decrypt(data)
+					print(f"Got {len(data)} bytes from {addr[0]}, decrypted: {plain is not None}")   
 					if plain:
 						x, y, z = struct.unpack_from('fff', plain, 0x04)
 						speed = struct.unpack_from('f', plain, 0x4C)[0]
