@@ -48,7 +48,8 @@ pip install -r requirements.txt
 ### Config
 Edit config.json with your console IP(s). Leave the IP empty (or omit the line) for consoles you don't have.
 
-### Run
+### Use
+1. Start bridge.py in a terminal
 ```
 python3 bridge.py   
 ```
@@ -59,9 +60,6 @@ Listening for telemetry from: {'ps5': '192.168.0.79'}
 WebSocket on port 8765
 Waiting for packets... (Ctrl+C to stop)
 ```
-
-### Use
-1. Start bridge.py in a terminal
 2. Open index.html in your browser
 3. Start GT7 on the PS5/PS4
 4. A yellow dot (PS5) or cyan dot (PS4) + trail appears on the aerial panel
