@@ -48,11 +48,6 @@ pip install -r requirements.txt
 ### Config
 Edit config.json with your console IP(s). Leave the IP empty (or omit the line) for consoles you don't have.
 
-{
-  "ps5_ip": "192.168.0.79",
-  "ps4_ip": ""
-}
-
 ### run
 ```
 python3 bridge.py   
