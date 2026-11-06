@@ -32,6 +32,11 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@geoman-io/leaflet-geoman-free@2.14.1/dist/leaflet-geoman.min.js"></script>
 <script>
+// --- Test url param room_id ---
+const params = new URLSearchParams(window.location.search);
+const room = params.get('room_id');
+console.log('Room_ID:', room_id);   
+
 // --- Dual map setup ---
 const center = [50.33323, 6.94309];
 const zoom = 15;
