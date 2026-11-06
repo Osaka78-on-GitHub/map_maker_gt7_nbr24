@@ -23,6 +23,10 @@ def check_deps():
 
 check_deps()
 
+import tomli
+import websockets
+from salsa20 import Salsa20_xor
+
 # --- Config ---
 config_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.toml")
 with open(config_file, "rb") as f:
