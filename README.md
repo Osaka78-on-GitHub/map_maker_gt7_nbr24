@@ -38,7 +38,40 @@ Open `index.html` in a browser. No server needed.
 
 Receives GT7 telemetry via UDP and streams it to the map as a live car dot.
 
-### Setup
+### Requirements
+salsa20 and websockets   
 
 ```bash
-pip install salsa20 websockets   
+pip install -r requirements.txt
+```
+
+### Config
+Edit config.json with your console IP(s). Leave the IP empty (or omit the line) for consoles you don't have.
+
+{
+  "ps5_ip": "192.168.0.79",
+  "ps4_ip": ""
+}
+
+### run
+```
+python3 bridge.py   
+```
+You should see:
+
+```
+Listening for telemetry from: {'ps5': '192.168.0.79'}
+WebSocket on port 8765
+Waiting for packets... (Ctrl+C to stop)
+```
+
+### Use
+1. Start bridge.py in a terminal
+2. Open index.html in your browser
+3. Start GT7 on the PS5/PS4
+4. A yellow dot (PS5) or cyan dot (PS4) + trail appears on the aerial panel
+
+### Requirements
+Console on the same LAN as the machine running bridge.py
+GT7 running (telemetry only sends while in-game)
+Ports 33739 (heartbeat) and 33740 (telemetry) open
