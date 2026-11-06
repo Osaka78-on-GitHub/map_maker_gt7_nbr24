@@ -48,7 +48,7 @@ pip install -r requirements.txt
 ### Config
 Edit config.json with your console IP(s). Leave the IP empty (or omit the line) for consoles you don't have.
 
-### run
+### Run
 ```
 python3 bridge.py   
 ```
