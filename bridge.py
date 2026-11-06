@@ -59,4 +59,7 @@ clients = set()
 async def ws_handler(ws):
     clients.add(ws)
     try:
-        async    
+        async for _ in ws:
+            pass
+    finally:
+        clients.discard(ws)   
