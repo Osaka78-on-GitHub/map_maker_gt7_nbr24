@@ -1,12 +1,14 @@
-import socket
-import struct
 import asyncio
+import glob
+import http.server
 import json
 import os
+import shutil
+import socket
+import struct
 import subprocess
-import webbrowser
-import http.server
 import threading
+import webbrowser
 
 def check_deps():
 	deps = {
@@ -80,56 +82,80 @@ def decrypt(data):
 		return None
 	return plain
 
-# --- WebSocket (host: accepts players + viewers) ---
-viewers = set()
-players = set()
+# --- Websocket ---
+connected = set()
 
 async def ws_handler(ws):
-	# First message from a player is {"type": "player", "name": "ps5"}
-	# Viewers just connect and wait
-	is_player = False
-	try:
-		first = await asyncio.wait_for(ws.recv(), timeout=2)
-		data = json.loads(first)
-		if data.get("type") == "player":
-			is_player = True
-			players.add(ws)
-			print(f"Player connected: {data.get('name')}")
-	except (asyncio.TimeoutError, json.JSONDecodeError):
-		pass
-
-	if not is_player:
-		viewers.add(ws)
-
+	connected.add(ws)
 	try:
 		async for msg in ws:
-			if is_player:
-				# Player is pushing telemetry, broadcast to viewers
-				if viewers:
-					await asyncio.wait_for(
-						asyncio.gather(*[v.send(msg) for v in viewers], return_exceptions=True),
-						timeout=0.1
-					)
+			for c in connected:
+				if c is not ws:
+					await c.send(msg)
 	except:
 		pass
 	finally:
-		viewers.discard(ws)
-		players.discard(ws)
+		connected.discard(ws)
+		
+# --- Room ID ---
+room_id = ""
+answer = input("Map for Room ID? [y/n]: ").strip().lower()
+if answer == "y":
+	room_id = input("Room ID: ").strip()
 
+# --- create url ---
+
+cf_path = None
+for f in glob.glob(os.path.join(os.path.dirname(os.path.abspath(__file__)), "cloudflared*")):
+	if os.access(f, os.X_OK):
+		cf_path = f
+		break
+
+if not cf_path:
+	cf_path = shutil.which("cloudflared")
+	
+cf_proc = None
+
+def start_relay(cf_path):
+	global cf_proc
+	cf_proc = subprocess.Popen(
+		[cf_path, "tunnel", "--url", "http://localhost:8765"],
+		stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True
+	)
+	for line in cf_proc.stdout:
+		if "trycloudflare.com" in line:
+			return "wss://" + line.split("https://")[1].strip()
+	cf_proc.kill()
+	return None
+
+if room_id:
+	if cf_path:
+		relay_url = start_relay(cf_path)
+	else:
+		relay_url = None
+	if relay_url:
+		url = f"https://osaka78-on-github.github.io/map_maker_gt7_nbr24/?room_id={room_id}&relay={relay_url}"
+	else:
+		print("Error: cloudflared not found or failed to start.")
+		if input("Run localhost? [y/n]: ").strip().lower() != "y":
+			exit(1)
+		url = "http://localhost:8080/index.html"
+
+else:
+	url = "http://localhost:8080/index.html"   
+
+
+	
 # --- HTTP server (serves index.html) ---
-def serve_http():
-	handler = http.server.SimpleHTTPRequestHandler
-	httpd = http.server.HTTPServer(('127.0.0.1', 8080), handler)
-	httpd.serve_forever()
+if not room_id:
+	def serve_http():
+		handler = http.server.SimpleHTTPRequestHandler
+		httpd = http.server.HTTPServer(('127.0.0.1', 8080), handler)
+		httpd.serve_forever()
 
-http_thread = threading.Thread(target=serve_http, daemon=True)
-http_thread.start()
-
-# --- Relay config ---
-RELAY = config.get("relay", {}).get("url", "")
-if RELAY:
-	print(f"Guest mode — pushing to: {RELAY}")
-
+	http_thread = threading.Thread(target=serve_http, daemon=True)
+	http_thread.start()
+	
 # --- Main loop ---
 async def main():
 	hb = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -142,69 +168,55 @@ async def main():
 
 	loop = asyncio.get_event_loop()
 
-	if RELAY:
-		async with websockets.connect(RELAY) as relay:
-			await relay.send(json.dumps({"type": "player", "name": "guest"}))
-			print(f"Connected to relay. Waiting for packets... (Ctrl+C to stop)")
-			while True:
-				for name, ip in PLAYSTATION.items():
-					try:
-						hb.sendto(b'B', (ip, 33739))
-					except:
-						pass
-				try:
-					data, addr = await loop.run_in_executor(None, sock.recvfrom, 65536)
-					plain = decrypt(data)
-					if plain:
-						x, y, z = struct.unpack_from('fff', plain, 0x04)
-						speed = struct.unpack_from('f', plain, 0x4C)[0]
-						console = "unknown"
-						for name, ip in PLAYSTATION.items():
-							if addr[0] == ip:
-								console = name
-						msg = json.dumps({"console": console, "x": x, "y": y, "z": z, "speed": speed})
-						await relay.send(msg)
-				except socket.timeout:
-					pass
-				except websockets.exceptions.ConnectionClosed:
-					print("Relay connection lost.")
-					return
-	else:
-		async with websockets.serve(ws_handler, '0.0.0.0', 8765):
-			print(f"Listening for telemetry from: {PLAYSTATION}")
-			print(f"WebSocket: ws://localhost:8765")
-			print(f"Map: http://localhost:8080")
-			print("Waiting for packets... (Ctrl+C to stop)")
-			webbrowser.open("http://localhost:8080/index.html")
-			while True:
-				for name, ip in PLAYSTATION.items():
-					try:
-						hb.sendto(b'B', (ip, 33739))
-					except:
-						pass
-				try:
-					data, addr = await loop.run_in_executor(None, sock.recvfrom, 65536)
-					plain = decrypt(data)
-					print(f"Got {len(data)} bytes from {addr[0]}, decrypted: {plain is not None}")   
-					if plain:
-						x, y, z = struct.unpack_from('fff', plain, 0x04)
-						speed = struct.unpack_from('f', plain, 0x4C)[0]
-						console = "unknown"
-						for name, ip in PLAYSTATION.items():
-							if addr[0] == ip:
-								console = name
-						msg = json.dumps({"console": console, "x": x, "y": y, "z": z, "speed": speed})
-						if viewers:
-							await asyncio.wait_for(
-								asyncio.gather(*[v.send(msg) for v in viewers], return_exceptions=True),
-								timeout=0.1
-							)
-				except socket.timeout:
-					pass
-				except asyncio.TimeoutError:
-					pass
+	async with websockets.serve(ws_handler, '0.0.0.0', 8765):
+		print(f"Listening for telemetry from: {PLAYSTATION}")
+		print(f"Map: {url}")
+		print("(Ctrl+C to stop)")
 
+		webbrowser.open(url)
+
+		# Test: wait for first packet
+		print("Waiting for first packet...")
+		try:
+			data, addr = await loop.run_in_executor(None, sock.recvfrom, 65536)
+			plain = decrypt(data)
+			if not plain:
+				print("Error: packet received but decryption failed.")
+				exit(1)
+			print(f"OK: {len(data)} bytes from {addr[0]}")
+		except socket.timeout:
+			print("Error: no telemetry received. Is GT7 running and IP correct?")
+			exit(1)
+
+		while True:
+			for name, ip in PLAYSTATION.items():
+				try:
+					hb.sendto(b'B', (ip, 33739))
+				except:
+					pass
+			try:
+				data, addr = await loop.run_in_executor(None, sock.recvfrom, 65536)
+				plain = decrypt(data)
+				if plain:
+					x, y, z = struct.unpack_from('fff', plain, 0x04)
+					speed = struct.unpack_from('f', plain, 0x4C)[0]
+					console = "unknown"
+					for name, ip in PLAYSTATION.items():
+						if addr[0] == ip:
+							console = name
+					msg = json.dumps({"console": console, "x": x, "y": y, "z": z, "speed": speed})
+					if connected:
+						await asyncio.wait_for(
+							asyncio.gather(*[v.send(msg) for v in connected], return_exceptions=True),
+							timeout=0.1
+						)
+			except socket.timeout:
+				pass
+			except asyncio.TimeoutError:
+				pass
 try:
 	asyncio.run(main())
 except KeyboardInterrupt:
+	if cf_proc:
+		cf_proc.kill()
 	print("\nStopped.")
