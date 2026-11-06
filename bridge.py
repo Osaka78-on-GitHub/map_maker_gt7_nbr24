@@ -1,13 +1,28 @@
+import socket
+import struct
 import asyncio
 import json
 import os
-import socket
-import struct
 import subprocess
-import tomli
-import websockets
-from salsa20 import Salsa20_xor
 
+def check_deps():
+    deps = {
+        "tomli": "tomli",
+        "websockets": "websockets",
+        "salsa20": "salsa20",
+    }
+    missing = []
+    for mod, pip_name in deps.items():
+        try:
+            __import__(mod)
+        except ImportError:
+            missing.append(pip_name)
+    if missing:
+        print(f"Missing: pip install {' '.join(missing)}")
+        exit(1)
+
+check_deps()
+  
 # --- Config ---
 config_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.toml")
 with open(config_file, "rb") as f:
