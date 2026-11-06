@@ -70,3 +70,31 @@ Waiting for packets... (Ctrl+C to stop)
 Console on the same LAN as the machine running bridge.py
 GT7 running (telemetry only sends while in-game)
 Ports 33739 (heartbeat) and 33740 (telemetry) open
+
+## Credits
+| What    | Who  | License  | Where  |
+|:------  |:-----|:---------|:-------|
+| Leaflet | Vladimir Agafonkin + contributors | BSD-2 | leafletjs.com |
+| Geoman (leaflet-geoman-free) | geoman-io team | MIT | github.com/geoman-io/leaflet-geoman-free |
+| `salsa20` (Python) | — | — | PyPI |
+| `websockets` (Python) | Aymeric Augustin + contributors | BSD-3 | github.com/aa1000/pywebsockets |
+| `tomli` (Python) | Taneli Hukkinen | MIT | github.com/hukkin/tomli |
+| PySceneDetect | Bruce West + contributors | BSD-3 | github.com/BruceDLight/Scenedetect |
+
+GT7 telemetry protocol (the decryption logic in bridge.py):
+
+This is the big one. The Salsa20 key, packet sizes (296/316/344), IV masks (0xDEADBEAF / 0xDEADBEEF / 0x55FABB4F), field offsets, and magic number were all reverse-engineered by the community:
+| Who | What they did |
+|-----|---------------|
+| **Nenkai** | Originally discovered GT7's hidden UDP telemetry, published PDTools (MIT) |
+| **Bornhall** | Reverse-engineered the full protocol details (key, nonce derivation, all field offsets) |
+| **MacManley** | Wrote gt7-udp (MIT) — well-documented reference implementation covering all 3 packet types |
+| **tarnheld** | Contributed to packet documentation on GTPlanet |
+| **vwhitteron** | gt-telemetry library, helped document packet variant C |
+| **Chi-Ho, Beregoz** | Helped research packet variant C |
+| **ddm999** | Car and manufacturer ID database (gt7info) |
+
+| What | Who |
+|------|-----|
+| DOP20 aerial imagery | State of :inlineEntity{type="inline_entity" conversation="09c5027d81fb71cdeb2681a4af1ec3e94920" name="Rheinland-Pfalz" about="German&#32;state" nonce="39e4f213f270cec83c49da035d624aa0" sig="ed1766ac99d11b46c3ba68c1c51f7113f9172dc041b4978c98e123d52db4f2d8"} Geoportal (government, freely available) |
+| OSM road data | OpenStreetMap contributors |
