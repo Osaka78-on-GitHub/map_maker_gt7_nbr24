@@ -11,7 +11,7 @@ https://osaka78-on-github.github.io/map_maker_gt7_nbr24/
 ## Files
 
 | File          | Purpose       | Method               |
-|---------------|---------------|----------------------|
+|------------   |------------   |-------------------   |
 | `index.html`  | Map Maker     | web browser          |
 | `bridge.py`   | GT7 Telemetry | Salsa20 to WebSocket |
 | `config.json` | Cofiguration  | PlayStation IP       |
