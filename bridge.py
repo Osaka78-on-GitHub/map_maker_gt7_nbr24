@@ -4,14 +4,14 @@ import os
 import socket
 import struct
 import subprocess
-import tomllib
+import tomli
 import websockets
 from salsa20 import Salsa20_xor
 
 # --- Config ---
 config_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.toml")
 with open(config_file, "rb") as f:
-    config = tomllib.load(f)
+    config = tomli.load(f)
 PLAYSTATION = {}
 for name, c in config.get("playstation", {}).items():
     if c.get("ip"):
