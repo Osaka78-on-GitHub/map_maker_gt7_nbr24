@@ -1,16 +1,7 @@
-# uncomment to add configuration
+# This is a TOML document
+# docs https://toml.io/en/
 
-# PlayStation IP address for GT7 Telemetry
-# any <name> allowed
-# [playstation.<name>]
-# ip = "<your playstation ip address>"
+# uncomment to configure
 
-# [playstation.ps4]
-# ip = "192.168.0.79"
-
-# [playstation.random_name]
-# ip = "192.168.0.77"
-
-# [playstation."my random name"]
-# ip = "192.168.0.76"
-
+# [playstation."<playstation nickname>"]
+# ip = "192.168.0.xx"
