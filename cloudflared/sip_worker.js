@@ -16,7 +16,7 @@ export default {
 		const client = pair[0];
 		const server = pair[1];
 		server.accept();
-																		
+
 		const room = "default";
 		if (!rooms.has(room)) {
 			rooms.set(room, new Set());
