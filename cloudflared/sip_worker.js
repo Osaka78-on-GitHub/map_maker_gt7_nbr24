@@ -12,10 +12,11 @@ export default {
 			"WebSocket only",{ status: 400 });
 		}
 
-		const { 0: client, 1: server } = new \
-		WebSocketPair();
+		const pair = new WebSocketPair();
+		const client = pair[0];
+		const server = pair[1];
 		server.accept();
-
+																		
 		const room = "default";
 		if (!rooms.has(room)) {
 			rooms.set(room, new Set());
@@ -40,7 +41,9 @@ export default {
 			peers.delete(server);
 		});
 
-		return new Response(
-		null, { status: 101, webSocket: client });
+		return new Response(null, { 
+		status: 101, 
+		webSocket: client 
+		});
 	}
 };   
