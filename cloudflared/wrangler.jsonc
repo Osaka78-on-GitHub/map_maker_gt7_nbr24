@@ -1,0 +1,5 @@
+{
+  "name": "sipworker",
+  "main": "sip_worker.js",
+  "compatibility_date": "2026-11-09"
+}
