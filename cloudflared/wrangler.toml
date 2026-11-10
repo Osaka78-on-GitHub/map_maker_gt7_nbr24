@@ -1,5 +1,5 @@
-name = "sipworker",
-main = "sip_worker.js",
+name = "sipworker"
+main = "sip_worker.js"
 compatibility_date = "2026-11-09"
 
 [durable_objects]
