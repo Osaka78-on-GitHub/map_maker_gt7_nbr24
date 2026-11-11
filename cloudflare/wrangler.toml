@@ -1,5 +1,5 @@
 "$schema" = "./node_modules/wrangler/config-schema.json"
-name = "websocket-hibernation-server"
+name = "map_maker_gt7_nbr24"
 main = "websocket-hibernation-server.js"
 upload_source_maps = true
 compatibility_date = "2026-11-10"
