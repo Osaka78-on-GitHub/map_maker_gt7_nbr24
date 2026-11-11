@@ -1,268 +1,55 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Map Maker GT7 NBR24</title>
-  <meta charset="utf-8">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@geoman-io/leaflet-geoman-free@2.14.1/dist/leaflet-geoman.css">
-  <style>
-    body { margin: 0; display: flex; height: 100vh; }
-    #map1, #map2 { flex: 1; }
-    #toolbar {
-      position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%);
-      z-index: 1000; background: #fff; padding: 6px 12px; border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,.3); display: flex; gap: 8px;
-    }
-    #toolbar button { padding: 6px 14px; cursor: pointer; }
+ <style>
+    body { background: #000; color: #fff; font-family: monospace; padding: 20px; }
+    h2 { color: #fff; }
+    input, button { background: #222; color: #fff; border: 1px solid #555; padding: 4px 8px; }
+    button { cursor: pointer; }
+    hr { border-color: #333; }
+    #log { white-space: pre-wrap; color: #0f0; }
+    #msgs div { color: #0ff; }
+    label { color: #fff; }
   </style>
-</head>
+<head><title>GT7 WebRTC Test</title></head>
 <body>
-<div id="map1"></div>
-<div id="map2"></div>
-<div id="toolbar">
-  <button onclick="toggleOSM()">OSM</button>
-  <button onclick="exportGeoJSON()">Export</button>
-  <button onclick="togglePanel()">Tags</button>
-</div>
+  <h2>WebRTC Signaling Test</h2>
+  <label>Room: <input id="room" value="websocket" style="width:80px"></label>
+  <button id="go">Connect</button>
+  <hr>
+  <div id="log" style="font-family:monospace;white-space:pre-wrap"></div>
+  <hr>
+  <input id="msg" placeholder="Type a message..." style="width:200px">
+  <button id="send">Send</button>
+  <div id="msgs" style="margin-top:12px;font-family:monospace"></div>
 
-<div id="tagPanel" style="display:none; position:absolute; top:10px; right:10px; width:280px; max-height:calc(100vh - 20px); overflow-y:auto; background:#fff; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,.3); z-index:1001; padding:10px; font-size:13px;">
-  <div id="tagList"></div>
-</div>   
-
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@geoman-io/leaflet-geoman-free@2.14.1/dist/leaflet-geoman.min.js"></script>
 <script>
-// --- Test url param room_id ---
-const params = new URLSearchParams(window.location.search);
-const room_id = params.get('room_id');
-console.log('Room_ID:', room_id);   
+const WORKER = "map-maker-gt7-nbr24.osaka78.workers.dev";
+let ws;
 
-// --- Dual map setup ---
-const center = [50.33323, 6.94309];
-const zoom = 15;
-const STORAGE_KEY = 'nbr_map_data';
+function log(s) { document.getElementById("log").textContent += s + "\n"; }
 
-const map1 = L.map('map1').setView(center, zoom, { maxZoom: 24 });
-const map2 = L.map('map2').setView(center, zoom, { maxZoom: 24 });
+document.getElementById("go").onclick = () => {
+  const room = document.getElementById("room").value;
+  log(`Connecting to wss://${WORKER}/${room}`);
+  ws = new WebSocket(`wss://${WORKER}/${room}`);
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 24, attribution: '© OSM'
-}).addTo(map1);
-
-L.tileLayer.wms('https://geo4.service24.rlp.de/wms/rp_dop20.fcgi', {
-  layers: 'rp_dop20', format: 'image/jpeg',
-  maxZoom: 24, maxNativeZoom: 18, attribution: '© RLP DOP20'
-}).addTo(map2);
-
-// Sync
-let syncing = false;
-function sync(from, to) {
-  if (syncing) return;
-  syncing = true;
-  to.setView(from.getCenter(), from.getZoom(), { animate: false });
-  syncing = false;
-}
-map1.on('move', () => sync(map1, map2));
-map2.on('move', () => sync(map2, map1));
-
-// --- Geoman ---
-map2.pm.addControls({ position: 'topleft' });
-
-// --- Load saved data ---
-const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-saved.forEach(item => {
-  let layer;
-  if (item.geometry.type === 'Point') {
-    layer = L.marker([item.geometry.coordinates[1], item.geometry.coordinates[0]]);
-  } else if (item.geometry.type === 'LineString') {
-    layer = L.polyline(item.geometry.coordinates.map(c => [c[1], c[0]]));
-  } else if (item.geometry.type === 'Polygon') {
-    layer = L.polygon(item.geometry.coordinates[0].map(c => [c[1], c[0]]));
-  }
-  if (layer) {
-    Object.assign(layer.options, item.properties);
-    layer.addTo(map2);
-  }
-});
-
-// --- Save ---
-function save() {
-  const layers = map2.pm.getGeomanLayers();
-  const data = layers.map(layer => {
-    let geometry;
-    if (layer instanceof L.Polygon) {
-      geometry = { type: 'Polygon', coordinates: [layer.getLatLngs()[0].map(p => [p.lng, p.lat])] };
-    } else if (layer instanceof L.Polyline) {
-      geometry = { type: 'LineString', coordinates: layer.getLatLngs().map(p => [p.lng, p.lat]) };
-    } else if (layer instanceof L.Marker) {
-      const ll = layer.getLatLng();
-      geometry = { type: 'Point', coordinates: [ll.lng, ll.lat] };
-    }
-    const props = {};
-    Object.keys(layer.options).forEach(k => {
-      if (typeof layer.options[k] === 'string') props[k] = layer.options[k];
-    });
-    return { type: 'Feature', properties: props, geometry };
-  });
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-}
-
-// --- Tag on create ---
-map2.on('pm:create', (e) => {
-  save();
-  togglePanel();
-  renderTags();
-});
-map2.on('pm:edit', save);
-map2.on('pm:remove', () => { save(); renderTags(); });
-map2.on('pm:cut', save);
-
-// --- Tag panel ---
-function togglePanel() {
-  const p = document.getElementById('tagPanel');
-  p.style.display = p.style.display === 'none' ? 'block' : 'none';
-  if (p.style.display === 'block') renderTags();
-}
-
-function renderTags() {
-  const layers = map2.pm.getGeomanLayers();
-  const list = document.getElementById('tagList');
-  list.innerHTML = '';
-  if (layers.length === 0) {
-    list.innerHTML = '<em>No features yet.</em>';
-    return;
-  }
-  layers.forEach((layer, i) => {
-    const div = document.createElement('div');
-    div.style.cssText = 'border-bottom:1px solid #eee; padding:8px 0;';
-    const props = {};
-    Object.keys(layer.options).forEach(k => {
-      if (typeof layer.options[k] === 'string') props[k] = layer.options[k];
-    });
-    let html = `<strong>${i + 1}. ${layer instanceof L.Marker ? 'Marker' : layer instanceof L.Polygon ? 'Polygon' : 'Line'}</strong> <button onclick="deleteFeature(${i})" style="float:right;font-size:11px;color:red;cursor:pointer;">✕</button><br>`;
-    Object.entries(props).forEach(([k, v]) => {
-      html += `<div style="display:flex;gap:4px;margin:3px 0;">
-        <input value="${k}" style="width:90px;font-size:12px;" data-i="${i}" data-k="${k}">
-        <input value="${v}" style="flex:1;font-size:12px;" data-i="${i}" data-v="${k}">
-      </div>`;
-    });
-    html += `<button onclick="addTagRow(${i})" style="font-size:11px;margin-top:4px;cursor:pointer;">+ add tag</button>`;
-    html += `<button onclick="saveTags(${i})" style="font-size:11px;margin-top:4px;cursor:pointer;color:green;">Save</button>`;
-    div.innerHTML = html;
-    list.appendChild(div);
-  });
-}
-
-function addTagRow(i) {
-  const divs = document.getElementById('tagList').children;
-  const div = divs[i];
-  const row = document.createElement('div');
-  row.style.cssText = 'display:flex;gap:4px;margin:3px 0;';
-  row.innerHTML = `<input placeholder="key" style="width:90px;font-size:12px;" data-i="${i}" data-k=""><input placeholder="value" style="flex:1;font-size:12px;" data-i="${i}" data-v="">`;
-  div.insertBefore(row, div.querySelector('button[onclick*="addTagRow"]'));
-}
-
-function saveTags(i) {
-  const layers = map2.pm.getGeomanLayers();
-  const layer = layers[i];
-  const divs = document.getElementById('tagList').children;
-  const div = divs[i];
-  Object.keys(layer.options).forEach(k => {
-    if (typeof layer.options[k] === 'string') delete layer.options[k];
-  });
-  div.querySelectorAll('input[data-k]').forEach(inp => {
-    const k = inp.value.trim();
-    if (k) {
-      const valInput = div.querySelector(`input[data-v="${k}"]`);
-      layer.options[k] = valInput ? valInput.value.trim() : '';
-    }
-  });
-  save();
-  renderTags();
-}
-
-function deleteFeature(i) {
-  const layers = map2.pm.getGeomanLayers();
-  if (layers[i]) {
-    layers[i].remove();
-    save();
-    renderTags();
-  }
-}
-
-// --- OSM toggle ---
-function toggleOSM() {
-  const m1 = document.getElementById('map1');
-  if (m1.style.display === 'none') {
-    m1.style.display = 'block';
-    m1.style.flex = '1';
-  } else {
-    m1.style.display = 'none';
-    map2.invalidateSize();
-  }
-}
-
-// --- Export ---
-function exportGeoJSON() {
-  const layers = map2.pm.getGeomanLayers();
-  const features = layers.map(layer => {
-    let geometry;
-    if (layer instanceof L.Polygon) {
-      geometry = { type: 'Polygon', coordinates: [layer.getLatLngs()[0].map(p => [p.lng, p.lat])] };
-    } else if (layer instanceof L.Polyline) {
-      geometry = { type: 'LineString', coordinates: layer.getLatLngs().map(p => [p.lng, p.lat]) };
-    } else if (layer instanceof L.Marker) {
-      const ll = layer.getLatLng();
-      geometry = { type: 'Point', coordinates: [ll.lng, ll.lat] };
-    }
-    const props = {};
-    Object.keys(layer.options).forEach(k => {
-      if (typeof layer.options[k] === 'string') props[k] = layer.options[k];
-    });
-    return { type: 'Feature', properties: props, geometry };
-  });
-  const geojson = { type: 'FeatureCollection', features };
-  const blob = new Blob([JSON.stringify(geojson, null, 2)], { type: 'application/geo+json' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'nbr_map.geojson';
-  a.click();
-}
-
-// --- Live telemetry ---
-let ws = null;
-try {
-    const params = new URLSearchParams(window.location.search);
-  const relay = params.get('relay');
-  ws = new WebSocket(relay || 'ws://localhost:8765');   
-  const cars = {};
-  const colors = { ps5: '#ff0', ps4: '#0ff' };
+  ws.onopen = () => log("WS connected.");
 
   ws.onmessage = (e) => {
-    const d = JSON.parse(e.data);
-    const id = d.console || 'ps5';
-    if (!cars[id]) {
-      cars[id] = {
-        marker: L.circleMarker([0, 0], { radius: 6, color: colors[id] || '#f0f', fillOpacity: 0.9 }).addTo(map2),
-        trail: L.polyline([], { color: colors[id] || '#f0f', weight: 2, opacity: 0.6 }).addTo(map2),
-        points: []
-      };
-    }
-    const origin = { lat: 50.3356, lng: 6.9431 };
-    const lat = origin.lat + (-d.z) / 111320;
-    const lng = origin.lng + d.x / (111320 * Math.cos(origin.lat * Math.PI / 180));
-    cars[id].marker.setLatLng([lat, lng]);
-    cars[id].points.push([lat, lng]);
-    if (cars[id].points.length > 10000) cars[id].points.shift();
-    cars[id].trail.setLatLngs(cars[id].points);
+    document.getElementById("msgs").innerHTML += `<div>← ${e.data}</div>`;
   };
 
-  ws.onclose = () => {
-    console.log('Telemetry disconnected');
-  };
-} catch (e) {
-  console.log('No telemetry (bridge not running)');
-} 
+  ws.onclose = () => log("WS closed.");
+  ws.onerror = () => log("WS error.");
+};
+
+document.getElementById("send").onclick = () => {
+  const text = document.getElementById("msg").value;
+  ws.send(text);
+  document.getElementById("msgs").innerHTML += `<div>→ ${text}</div>`;
+  document.getElementById("msg").value = "";
+};
+  
 </script>
 </body>
 </html>   
