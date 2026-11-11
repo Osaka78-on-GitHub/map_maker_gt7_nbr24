@@ -2,6 +2,7 @@
 name = "websocket-hibernation-server"
 main = "websocket-hibernation-server.js"
 upload_source_maps = true
+compatibility_date = "2026-11-10"
 
 [[durable_objects.bindings]]
 name = "WEBSOCKET_HIBERNATION_SERVER"
