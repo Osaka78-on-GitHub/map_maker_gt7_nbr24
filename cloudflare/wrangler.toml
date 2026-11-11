@@ -1,0 +1,12 @@
+"$schema" = "./node_modules/wrangler/config-schema.json"
+name = "websocket-hibernation-server"
+main = "websocket-hibernation-server.js"
+upload_source_maps = true
+
+[[durable_objects.bindings]]
+name = "WEBSOCKET_HIBERNATION_SERVER"
+class_name = "WebSocketHibernationServer"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = [ "WebSocketHibernationServer" ]
