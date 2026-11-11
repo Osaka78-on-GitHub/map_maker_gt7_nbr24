@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<style>
+body {
+	background: rgb(55,55,55);
+	margin: 0;
+	overflow: hidden; }
+textarea {
+	background: rgb(55,55,55);
+	color: rgb(233,233,233);
+	font-family: "Ubuntu Mono", monospace;
+	font-size: 35px;
+	display: block;
+	width: 100%;
+	height: 100vh;
+	border: none;
+	resize: none;
+	outline: none;
+	overflow-x: hidden; }
+</style>
+<head><title>
+test-websocket-hibernation-server
+</title></head>
+<body>
+<textarea id="terminal" placeholder="type 'websocket' to chat..."></textarea>
+<script>
+const WORKER = "map-maker-gt7-nbr24.osaka78.workers.dev";
+const ROOM = "websocket";
+const t = document.getElementById("terminal");
+function log(s) {
+	t.value += s + "\n";
+	t.selectionStart = t.selectionEnd = t.value.length;   
+	if (t.scrollHeight > t.clientHeight)
+	t.scrollTop = t.scrollHeight;
+	t.focus();
+}
+ws = new WebSocket("wss://" + WORKER + "/" + ROOM);
+ws.onmessage = (e) => { log("<- " + e.data);
+};
+t.onkeydown = (e) => {
+	if (e.key !== "Enter") return;
+	e.preventDefault();
+	const lines = t.value.split("\n");
+	const last = lines.pop();
+	if (!last.trim()) return;
+	ws.send(last);
+	t.value = lines.join("\n") + "\n"
+		+ "-> " + last + "\n";
+	t.scrollTop = t.scrollHeight;
+	t.focus();
+};
+t.focus();	 
+</script>
+</body>
+</html>	 
