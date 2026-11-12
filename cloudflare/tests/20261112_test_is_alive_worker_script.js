@@ -1,6 +1,6 @@
 /* 
-test file
-see test config for instructions
+test file instructions
+https://github.com/Osaka78-on-GitHub/map_maker_gt7_nbr24/blob/main/cloudflare/tests/20261112_test_is_alive_readme
 */
 import { DurableObject } from "cloudflare:workers";
 
