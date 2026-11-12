@@ -1,4 +1,11 @@
+LOG            Simple test for is cloudflare worker alive?
+LOG            this test ran successfully on the night of Nov 11 2026
+LOG            I don't know how to preserve the state of the test
+LOG            so this is my attempt to preserve the test state
+LOG            I'll give you what I had to the best of my ability
+
 Test is:       Browser 0 > TCP > Cloudflare Worker > DO > TCP > Browser 1,2,3...
+git commit     x
 test html      https://github.com/Osaka78-on-GitHub/map_maker_gt7_nbr24/blob/main/cloudflare/tests/20261112_test_is_alive.html
 worker name    map-maker-gt7-nbr24.osaka78.workers.dev
 worker dash    https://dash.cloudflare.com/554f7e3eb15faf5f698a70057e3edab4/workers-and-pages
