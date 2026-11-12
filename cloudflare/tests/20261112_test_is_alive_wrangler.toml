@@ -1,1 +1,18 @@
-x
+note = """
+test file
+see test config for instructions
+"""
+
+"$schema" = "./node_modules/wrangler/config-schema.json"
+name = "map_maker_gt7_nbr24"
+main = "websocket-hibernation-server.js"
+upload_source_maps = true
+compatibility_date = "2026-11-10"
+
+[[durable_objects.bindings]]
+name = "WEBSOCKET_HIBERNATION_SERVER"
+class_name = "WebSocketHibernationServer"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = [ "WebSocketHibernationServer" ]
