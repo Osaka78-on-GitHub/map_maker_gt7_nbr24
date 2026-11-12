@@ -1,1 +1,6 @@
-x
+Test is:       Browser 0 > TCP > Cloudflare Worker > DO > TCP > Browser 1,2,3...
+worker name    map-maker-gt7-nbr24.osaka78.workers.dev
+worker dash    https://dash.cloudflare.com/554f7e3eb15faf5f698a70057e3edab4/workers-and-pages
+worker wd      https://github.com/Osaka78-on-GitHub/map_maker_gt7_nbr24/tree/main/cloudflare
+worker script  https://github.com/Osaka78-on-GitHub/map_maker_gt7_nbr24/blob/main/cloudflare/tests/20261112_test_is_alive_worker_script.js
+wrangler       https://github.com/Osaka78-on-GitHub/map_maker_gt7_nbr24/blob/main/cloudflare/tests/20261112_test_is_alive_wrangler.toml
