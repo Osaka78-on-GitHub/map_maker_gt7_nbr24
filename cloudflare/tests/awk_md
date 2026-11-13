@@ -1,7 +1,20 @@
 #!/bin/bash
 : << EOF
+Use awk and bash to make a nice md table
+that looks good in plain text
+
+awk_in  copy paste your crappy table here
+awk_out get your nice table here
+
 Made with the assistance of Ask Brave
 EOF
+# 1. awk measures raw widths
+read w1 w2 < <(awk '{
+  if(length($1)>a) a=length($1)
+  if(length($2)>b) b=length($2)
+} END{print a, b}' awk_in)
+
+# 2. bash snaps them
 snap_fibonacci() {
 f=$1
 [[ $f -lt 5 ]] && f=5 && return
@@ -14,12 +27,6 @@ f=$1
 [[ $f -lt 144 ]] && f=144 && return
 [[ $f -lt 233 ]] && f=233 && return
 }
-# 1. awk measures raw widths
-read w1 w2 < <(awk '{
-  if(length($1)>a) a=length($1)
-  if(length($2)>b) b=length($2)
-} END{print a, b}' awk_in)
-# 2. bash snaps them
 snap_fibonacci $w1 && w1=$f
 snap_fibonacci $w2 && w2=$f
 
