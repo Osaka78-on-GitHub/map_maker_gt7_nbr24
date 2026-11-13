@@ -1,23 +1,6 @@
 #!/bin/bash
 : << EOF
-awk '
-NR==FNR {
-  if (length($1) > w1) w1 = length($1)
-  if (length($2) > w2) w2 = length($2)
-  next
-}
-FNR==1 {
-  printf "| %-*s | %-*s |\n", w1, $1, w2, $2
-  sep1 = ""; for(i=0;i<w1;i++) sep1 = sep1 "-"
-  sep2 = ""; for(i=0;i<w2;i++) sep2 = sep2 "-"
-  printf "|:%s|:%s|\n", sep1, sep2
-  next
-}
-{
-  printf "| %-*s | %-*s |\n", w1, $1, w2, $2
-}
-' awk_in > awk_out
-
+Made with the assistance of Ask Brave
 EOF
 snap_fibonacci() {
 f=$1
