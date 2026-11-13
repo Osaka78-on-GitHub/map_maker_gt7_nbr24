@@ -1,0 +1,64 @@
+| name                               | specification                                                                                                                                    |
+|:-----------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------|
+| TC39                               | https://tc39.es/ecma262                                                                                                                          |
+| !                                  | https://tc39.es/ecma262/#sec-logical-not-operator                                                                                                |
+| const                              | https://tc39.es/ecma262/#sec-let-and-const-declarations                                                                                          |
+| pop                                | https://tc39.es/ecma262/#sec-array.prototype.pop                                                                                                 |
+| if                                 | https://tc39.es/ecma262/#sec-if-statements                                                                                                       |
+| function                           | https://tc39.es/ecma262/#sec-function-declarations                                                                                               |
+| join                               | https://tc39.es/ecma262/#sec-array.prototype.join                                                                                                |
+| length                             | https://tc39.es/ecma262/#sec-string.prototype.length                                                                                             |
+| new                                | https://tc39.es/ecma262/#sec-newexpressions                                                                                                      |
+| split                              | https://tc39.es/ecma262/#sec-string.prototype.split                                                                                              |
+| return                             | https://tc39.es/ecma262/#sec-return-statements                                                                                                   |
+| trim                               | https://tc39.es/ecma262/#sec-string.prototype.trim                                                                                               |
+|                                    |                                                                                                                                                  |
+| W3C-WebRTC                         | https://www.w3.org/TR/webrtc/                                                                                                                    |
+| addIceCandidate                    | https://www.w3.org/TR/webrtc/#dom-peerconnection-addicecandidate                                                                                 |
+| createAnswer                       | https://www.w3.org/TR/webrtc/#dom-rtcpeerconnection-createanswer                                                                                 |
+| createDataChannel                  | https://www.w3.org/TR/webrtc/#dom-peerconnection-createdatachannel                                                                               |
+| createOffer                        | https://www.w3.org/TR/webrtc/#dom-rtcpeerconnection-createoffer                                                                                  |
+| iceConnectionState                 | https://www.w3.org/TR/webrtc/#dom-peerconnection-ice-connection-state                                                                            |
+| iceServers                         | https://www.w3.org/TR/webrtc/#dom-rtcconfiguration-iceservers                                                                                    |
+| ondatachannel                      | https://www.w3.org/TR/webrtc/#dom-rtcpeerconnection-ondatachannel                                                                                |
+| onicecandidate                     | https://www.w3.org/TR/webrtc/#dom-rtcpeerconnection-onicecandidate                                                                               |
+| onopen                             | https://www.w3.org/TR/webrtc/#dom-rtcdatachannel-onopen                                                                                          |
+| readyState                         | https://www.w3.org/TR/webrtc/#dom-datachannel-readystate                                                                                         |
+| RTCIceCandidate                    | https://www.w3.org/TR/webrtc/#dom-rtcicecandidate                                                                                                |
+| RTCPeerConnection                  | https://www.w3.org/TR/webrtc/#dom-rtcpeerconnection                                                                                              |
+| RTCSessionDescription              | https://www.w3.org/TR/webrtc/#dom-rtcsessiondescription                                                                                          |
+| send                               | https://www.w3.org/TR/webrtc/#dom-rtcdatachannel-send                                                                                            |
+| setLocalDescription                | https://www.w3.org/TR/webrtc/#dom-peerconnection-setlocaldescription                                                                             |
+| setRemoteDescription               | https://www.w3.org/TR/webrtc/#dom-peerconnection-setremotedescription                                                                            |
+| signalingState                     | https://www.w3.org/TR/webrtc/#dom-peerconnection-signaling-state                                                                                 |
+|                                    |                                                                                                                                                  |
+| WHATWG-DOM                         | https://dom.spec.whatwg.org                                                                                                                      |
+| document                           | https://dom.spec.whatwg.org/#interface-document                                                                                                  |
+| getElementById                     | https://dom.spec.whatwg.org/#dom-non-element-parent-node-getelementbyid                                                                          |
+| preventDefault                     | https://dom.spec.whatwg.org/#dom-event-preventdefault                                                                                            |
+|                                    |                                                                                                                                                  |
+| WHATWG-HTML                        | https://html.spec.whatwg.org                                                                                                                     |
+| selectionStart                     | https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#dom-textarea-selectionstart                                              |
+| selectionEnd                       | https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#dom-textarea-selectionend                                                |
+| value                              | https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#dom-textarea-value                                                       |
+| focus                              | https://html.spec.whatwg.org/multipage/interaction.html#dom-focus                                                                                |
+| data-(MessageEvent)                | https://html.spec.whatwg.org/multipage/comms.html#the-messageevent-interface                                                                     |
+|                                    |                                                                                                                                                  |
+| WHATWG                             | https://websockets.spec.whatwg.org                                                                                                               |
+| onmessage                          | https://websockets.spec.whatwg.org/#dom-websocket-onmessage                                                                                      |
+| send                               | https://websockets.spec.whatwg.org/#dom-websocket-send                                                                                           |
+|                                    |                                                                                                                                                  |
+| W3C-UI-Events                      | https://www.w3.org/TR/uievents/                                                                                                                  |
+| key                                | https://www.w3.org/TR/uievents/#dom-keyboardevent-key                                                                                            |
+| onkeydown                          | https://www.w3.org/TR/uievents/#event-type-keydown                                                                                               |
+|                                    |                                                                                                                                                  |
+| CSSOM-View                         | https://drafts.csswg.org/cssom-view/                                                                                                             |
+| clientHeight                       | https://drafts.csswg.org/cssom-view/#dom-element-clientheight                                                                                    |
+| scrollHeight                       | https://drafts.csswg.org/cssom-view/#dom-element-scrollheight                                                                                    |
+| scrollTop                          | https://drafts.csswg.org/cssom-view/#dom-element-scrolltop                                                                                       |
+|                                    |                                                                                                                                                  |
+| WORKER-Cloudflare                  | https://www.cloudflare.com/products/workers/                                                                                                     |
+|                                    |                                                                                                                                                  |
+| STUN-Cloudflare                    | https://developers.cloudflare.com/realtime/turn/                                                                                                 |
+| STUN-Bilibili                      | https://www.bilibili.com/opus/480479752342191842                                                                                                 |
+|                                    |                                                                                                                                                  |
