@@ -46,6 +46,5 @@ body {
 	flex: 1;
 	flex-direction: column-reverse;
 	min-height: 1em;
-	overflow-y: auto;
 	overflow-wrap: anywhere;
 }
