@@ -18,8 +18,6 @@ body {
     background: var(--color_min);
     color: var(--color_max);    
     display: flex;
-    margin: 0;
-    height: 100vh;
 }
 #panel {
 	background: var(--color_2);
