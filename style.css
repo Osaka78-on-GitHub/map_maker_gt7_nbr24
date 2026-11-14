@@ -7,6 +7,7 @@
 :root body {
     --background: rgb(0,0,0);
     --color: rgb(233,233,233);
+    --bg_input: rgb(35,35,35);
 }
 body {
     background: var(--background);
@@ -14,4 +15,14 @@ body {
     display: flex;
     margin: 0;
     height: 100vh;
+}
+#chat_input {
+	background: var(--bg_input);
+	border: none;
+	outline: none;
+	color: inherit;
+	font: inherit;
+	width: calc(35/55*100%);
+	height: 1em;
+	flex-shrink: 0;
 }
