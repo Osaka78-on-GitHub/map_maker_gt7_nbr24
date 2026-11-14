@@ -5,13 +5,15 @@
     overflow: hidden;
 }
 :root body {
-    --background: rgb(0,0,0);
-    --color: rgb(233,233,233);
-    --bg_input: rgb(34,34,34);
+    --color_0: rgb(0,0,0);
+    --color_1: rgb(34,34,34);
+    --color_2: rgb(55,55,55);
+    --color_3: rgb(89,89,89);
+    --color_max: rgb(233,233,233);
 }
 body {
-    background: var(--background);
-    color: var(--color);    
+    background: var(--color_0);
+    color: var(--color_max);    
     display: flex;
     margin: 0;
     height: 100vh;
