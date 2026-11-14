@@ -1,5 +1,4 @@
 :root {
-    canvas: rgb(35,35,35);
     color: rgb(233,233,233);
     font-family: "Ubuntu Mono", monospace;
     font-size: 35px;
@@ -7,7 +6,6 @@
     overflow: hidden;
 }
 :root.light {
-    canvas: rgb(233,233,233);
     color: rgb(0,0,0);
 }
 body {
