@@ -1,8 +1,10 @@
 | name                               | specification                                                                                                                                    |
 |:-----------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------|
 | CSSWG                              | https://drafts.csswg.org                                                                                                                         |
+| column                             | https://drafts.csswg.org/css-flexbox-1/#valdef-flex-direction-column                                                                             |
 | display                            | https://drafts.csswg.org/css-display-4/#propdef-display                                                                                          |
-| flex                               | https://drafts.csswg.org/css-flexbox-1                                                                                                           |
+| flex                               | https://drafts.csswg.org/css-flexbox-1/#propdef-flex                                                                                             |
+| flex-direction                     | https://drafts.csswg.org/css-flexbox-1/#propdef-flex-direction                                                                                   |
 |                                    |                                                                                                                                                  |
 | TC39                               | https://tc39.es/ecma262                                                                                                                          |
 | !                                  | https://tc39.es/ecma262/#sec-logical-not-operator                                                                                                |
