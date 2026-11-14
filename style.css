@@ -45,4 +45,6 @@ body {
 #chat_log {
 	flex:1;
 	min-height: 1em;
+	overflow-y: auto;
+	overflow-wrap: anywhere;
 }
