@@ -11,6 +11,8 @@
 | flex                               | https://drafts.csswg.org/css-flexbox-1/#propdef-flex                                                                                             |
 | flex-direction                     | https://drafts.csswg.org/css-flexbox-1/#propdef-flex-direction                                                                                   |
 | flex-shrink                        | https://drafts.csswg.org/css-flexbox-1/#propdef-flex-shrink                                                                                      |
+| overflow-y                         | https://drafts.csswg.org/css-overflow-3/#propdef-overflow-y                                                                                      |
+| overflow: auto                     | https://drafts.csswg.org/css-text-3/#overflow-wrap-property                                                                                      |
 |                                    |                                                                                                                                                  |
 | TC39                               | https://tc39.es/ecma262                                                                                                                          |
 | !                                  | https://tc39.es/ecma262/#sec-logical-not-operator                                                                                                |
