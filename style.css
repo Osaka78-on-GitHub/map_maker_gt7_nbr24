@@ -1,12 +1,12 @@
 :root {
-    color: rgb(233,233,233);
     font-family: "Ubuntu Mono", monospace;
     font-size: 35px;
     line-height: 1;
     overflow: hidden;
 }
-:root.light {
-    color: rgb(0,0,0);
+:root body {
+    background: rgb(0,0,0);
+    color: rgb(233,233,233);
 }
 body {
     display: flex;
