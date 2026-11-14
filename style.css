@@ -1,0 +1,10 @@
+body {
+	background: rgb(55,55,55);
+	color: rgb(233,233,233);
+	font-family: "Ubuntu Mono", monospace;
+	font-size: 35px;
+	line-height: 1;
+	display: flex;
+	margin: 0;
+	overflow: hidden;
+}
