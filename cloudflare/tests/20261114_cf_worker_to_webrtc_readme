@@ -11,7 +11,7 @@ Test is:       Browser 0 ──WSS──► CF Worker ──WSS──► Browser
                Browser 0 ──DataChannel (P2P)──► Browser 1,2,3…       (chat messages)   
 
 git repo       https://github.com/Osaka78-on-GitHub/map_maker_gt7_nbr24
-git SHA lock   
+git SHA lock   5cf3b195a555ab19fe69ff87ec28da39544ab004
 git SHA sync   45d2d30dfc6f4711bcc2d683f668b54a74c24eb0
 worker name    map-maker-gt7-nbr24.osaka78.workers.dev
 worker dash    https://dash.cloudflare.com/554f7e3eb15faf5f698a70057e3edab4/workers-and-pages
