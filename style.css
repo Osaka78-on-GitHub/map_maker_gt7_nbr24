@@ -5,7 +5,7 @@
     overflow: hidden;
 }
 :root body {
-    --background: rbg(0,0,0)
+    --background: rgb(0,0,0);
     --color: rgb(233,233,233);
 }
 body {
