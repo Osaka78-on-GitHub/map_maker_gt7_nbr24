@@ -10,6 +10,7 @@
 | display                            | https://drafts.csswg.org/css-display-4/#propdef-display                                                                                          |
 | flex                               | https://drafts.csswg.org/css-flexbox-1/#propdef-flex                                                                                             |
 | flex-direction                     | https://drafts.csswg.org/css-flexbox-1/#propdef-flex-direction                                                                                   |
+| flex-shrink                        | https://drafts.csswg.org/css-flexbox-1/#propdef-flex-shrink                                                                                      |
 |                                    |                                                                                                                                                  |
 | TC39                               | https://tc39.es/ecma262                                                                                                                          |
 | !                                  | https://tc39.es/ecma262/#sec-logical-not-operator                                                                                                |
