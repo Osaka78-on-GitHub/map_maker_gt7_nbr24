@@ -1,10 +1,18 @@
+:root {
+    background: rgb(0,0,0);
+    color: rgb(233,233,233);
+    font-family: "Ubuntu Mono", monospace;
+    font-size: 35px;
+    line-height: 1;
+    overflow: hidden;
+}
+:root.light {
+    background: rgb(233,233,233);
+    color: rgb(0,0,0);
+}
 body {
-	background: canvas;
-	color: rgb(233,233,233);
-	font-family: "Ubuntu Mono", monospace;
-	font-size: 35px;
-	line-height: 1;
-	display: flex;
-	margin: 0;
-	overflow: hidden;
+    display: flex;
+    flex-direction: column-reverse;
+    margin: 0;
+    height: 100vh;
 }
