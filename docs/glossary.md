@@ -1,5 +1,9 @@
 | name                               | specification                                                                                                                                    |
 |:-----------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------|
+| CSSWG                              | https://drafts.csswg.org                                                                                                                         |
+| display                            | https://drafts.csswg.org/css-display-4/#propdef-display                                                                                          |
+| flex                               | https://drafts.csswg.org/css-flexbox-1                                                                                                           |
+|                                    |                                                                                                                                                  |
 | TC39                               | https://tc39.es/ecma262                                                                                                                          |
 | !                                  | https://tc39.es/ecma262/#sec-logical-not-operator                                                                                                |
 | const                              | https://tc39.es/ecma262/#sec-let-and-const-declarations                                                                                          |
@@ -67,5 +71,3 @@
 |                                    |                                                                                                                                                  |
 | STUN-Cloudflare                    | https://developers.cloudflare.com/realtime/turn/                                                                                                 |
 | STUN-Bilibili                      | https://www.bilibili.com/opus/480479752342191842                                                                                                 |
-
-note: "stun.chat.bilibil.com" trys to accomodate GFW
