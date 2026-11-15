@@ -16,6 +16,7 @@
 |                                    |                                                                                                                                                  |
 | TC39                               | https://tc39.es/ecma262                                                                                                                          |
 | !                                  | https://tc39.es/ecma262/#sec-logical-not-operator                                                                                                |
+| await                              | https://tc39.es/ecma262/#await                                                                                                                   |
 | const                              | https://tc39.es/ecma262/#sec-let-and-const-declarations                                                                                          |
 | if                                 | https://tc39.es/ecma262/#sec-if-statements                                                                                                       |
 | function                           | https://tc39.es/ecma262/#sec-function-declarations                                                                                               |
