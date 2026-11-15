@@ -1,0 +1,10 @@
+[stun]
+default = [
+	"stun:stun.cloudflare.com:3478",
+]
+user = [
+	"your valid stun server here",
+	"stunx",
+	"stuny",
+	"stunz",
+]
