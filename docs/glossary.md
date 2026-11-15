@@ -59,6 +59,9 @@
 | setRemoteDescription               | https://www.w3.org/TR/webrtc/#dom-peerconnection-setremotedescription                                                                            |
 | signalingState                     | https://www.w3.org/TR/webrtc/#dom-peerconnection-signaling-state                                                                                 |
 |                                    |                                                                                                                                                  |
+| W3C-WebCrytpto                     | https://w3c.github.io/webcrypto/#dfn-Crypto-method-randomUUID                                                                                    |
+| randomUUID                         | https://w3c.github.io/webcrypto/#dfn-Crypto-method-randomUUID                                                                                    |
+|                                    |                                                                                                                                                  |
 | WHATWG                             | https://websockets.spec.whatwg.org                                                                                                               |
 | onmessage                          | https://websockets.spec.whatwg.org/#dom-websocket-onmessage                                                                                      |
 | send                               | https://websockets.spec.whatwg.org/#dom-websocket-send                                                                                           |
