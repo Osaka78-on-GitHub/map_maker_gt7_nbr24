@@ -10,13 +10,13 @@ async def exit_async(sock=None):
 import asyncio
 import json
 import os
-from Crypto.Cipher import Salsa20
 import socket
 import struct
 import subprocess
 import sys
 import time
 import tomllib
+from Crypto.Cipher import Salsa20
 
 # NOTIFICATIONS
 def notify_fail(msg):
