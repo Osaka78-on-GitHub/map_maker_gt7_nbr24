@@ -1,5 +1,17 @@
 Got it. Your problem is: **AI adds 20 unnecessary things, you need to find and delete them in 1 minute without breaking the script.**
 
+**AI Bloat Removal in 60s:**
+
+1. **Auto-detect (30s):** Run `vulture` (unused functions/vars) + `ruff` (unused imports). Delete everything flagged ≥80% confidence.
+
+2. **Eyeball 10 patterns (30s):** Empty `except: pass`, single-use helpers/constants, restating comments, single-method classes, orphan logging, redundant checks, duplicate logic, over-broad `except`, wrong type hints.
+
+3. **Delete in one pass, run the script.** If it breaks, undo just that one deletion.
+
+**Core rule:** *If deleting it doesn't change output, it wasn't needed.*
+
+
+
 This is a mechanical process, not a design exercise.
 
 ## The 1-Minute Process
