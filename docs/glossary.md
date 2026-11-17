@@ -14,6 +14,9 @@
 | overflow-y                         | https://drafts.csswg.org/css-overflow-3/#propdef-overflow-y                                                                                      |
 | overflow: auto                     | https://drafts.csswg.org/css-text-3/#overflow-wrap-property                                                                                      |
 |                                    |                                                                                                                                                  |
+| Python3.15                         | https://docs.python.org/3/                                                                                                                       |
+| import logging                     | https://docs.python.org/3/library/logging.html                                                                                                   |
+|                                    |                                                                                                                                                  |
 | TC39                               | https://tc39.es/ecma262                                                                                                                          |
 | !                                  | https://tc39.es/ecma262/#sec-logical-not-operator                                                                                                |
 | await                              | https://tc39.es/ecma262/#await                                                                                                                   |
