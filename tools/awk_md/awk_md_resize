@@ -1,4 +1,15 @@
 #!/bin/bash
+: << EOF
+Resize a md table with awk and bash 
+so it looks good in plain text
+
+awk_in  copy paste your crappy table here
+awk_out get your nice table here
+
+Made with the assistance of Ask Brave
+EOF
+
+# 1. awk measures raw widths (skipping separator rows)
 awk -F'|' '
 {
   n = NF - 2
@@ -8,27 +19,40 @@ awk -F'|' '
     if ($i !~ /^:?-+:?$/) is_sep = 0
   }
   for (i = 2; i <= n+1; i++) {
-    cols[NR, i-1] = $i
-    if (!is_sep) {
-      w = length($i)
-      if (w > width[i-1]) width[i-1] = w
-    }
+    if (!is_sep && length($i) > width[i-1]) width[i-1] = length($i)
   }
   if (NR == 1) ncols = n
-  sep[NR] = is_sep
 }
 END {
-  for (r = 1; r <= NR; r++) {
-    printf "|"
-    for (c = 1; c <= ncols; c++) {
-      if (sep[r]) {
-        s = ""
-        for (i = 0; i < width[c]; i++) s = s "-"
-        printf " %s |", s
-      } else {
-        printf " %-*s |", width[c], cols[r,c]
-      }
-    }
-    printf "\n"
+  for (c = 1; c <= ncols; c++) printf "%d ", width[c]
+  print ""
+}' awk_in > /tmp/awk_md_widths
+
+# 2. bash reads widths
+read -ra widths < /tmp/awk_md_widths
+
+# 3. awk formats with measured widths
+awk -F'|' -v widths="$(printf '%s ' "${widths[@]}")" '
+BEGIN {
+  split(widths, w, " ")
+}
+{
+  n = NF - 2
+  is_sep = 1
+  for (i = 2; i <= n+1; i++) {
+    gsub(/^[ \t]+|[ \t]+$/, "", $i)
+    if ($i !~ /^:?-+:?$/) is_sep = 0
   }
-}' awk_in > awk_out
+  printf "|"
+  for (i = 2; i <= n+1; i++) {
+    c = i - 1
+    if (is_sep) {
+      s = ""
+      for (j = 0; j < w[c]; j++) s = s "-"
+      printf " %s |", s
+    } else {
+      printf " %-*s |", w[c], $i
+    }
+  }
+  printf "\n"
+}' awk_in > awk_out   
