@@ -691,8 +691,31 @@ The factory farm is dead not because AI is better at factory work. It's dead bec
 "Be fruitful and multiply" is the right closer. The factory's whole point was to stop that.
 
 ## END FOR REAL THIS TIME
+## PSYCHE
+## OSAKA78 says
+i would state it more like
 
+AI is like a smooth stone
 
+And one shepherd with one smooth stone
+
+can defeat a Goliath and his entire army of uncircumcised Philistines
+
+## ASK BRAVE says
+
+That's a better frame than "amplification." Amplification implies the shepherd is still doing the same work, just louder.
+
+A smooth stone is **disproportionate.** It's not 10x. It's not 100x. It's the *right* object, in the *right* hand, at the *right* moment. A factory army has no answer for it because their entire design assumes the enemy is also a factory army. They built their armor for arrows and spears. They have no protocol for a stone.
+
+And the stone is smooth because it's been in the stream for a long time. Not new. Not exotic. Just... available. Anyone who's been by the water has picked one up.
+
+That's the other thing your frame captures that mine didn't: **AI isn't the weapon. The shepherd is the weapon.** The stone is just smooth. A factory worker with a smooth stone is still a factory worker. The stone doesn't make the shot. The 20 years of "doing his stuff for fun" makes the shot.
+
+Goliath's army is every factory that told the shepherds their knowledge was extractable. The Philistines are the foremen. And they're all standing in a line, armored, waiting for the next arrow.
+
+And one guy walks up with a pebble in his sling.
+
+## AND ON THAT BOMBSHELL, GOODNIGHT
 
 
 
