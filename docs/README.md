@@ -1,4 +1,4 @@
-| name                       | specification                                                                                       |
+| glossary                   | specification                                                                                       |
 | :------------------------- |:--------------------------------------------------------------------------------------------------- |
 | CSSOM-View                 | https://drafts.csswg.org/cssom-view/                                                                |
 | clientHeight               | https://drafts.csswg.org/cssom-view/#dom-element-clientheight                                       |
