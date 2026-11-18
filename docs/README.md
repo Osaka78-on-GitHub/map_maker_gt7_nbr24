@@ -15,7 +15,18 @@
 | overflow: auto             | https://drafts.csswg.org/css-text-3/#overflow-wrap-property                                         |
 |                            |                                                                                                     |
 | Python3.15                 | https://docs.python.org/3/                                                                          |
-| import logging             | https://docs.python.org/3/library/logging.html                                                      |
+| addHandler                 | https://docs.python.org/3/library/logging.html#logging.Logger.addHandler                            |
+| getLogger                  | https://docs.python.org/3/library/logging.html#logging.getLogger                                    |
+| _handler                   | https://docs.python.org/3/library/logging.html#logging.Handler                                      |
+| handlers                   | https://docs.python.org/3/library/logging.handlers.html#module-logging.handlers                     |
+| logger                     | x                                                     |
+| logging                    | https://docs.python.org/3/library/logging.html                                                      |
+| propogate                  | x                                                     |
+| StreamHandler              | x                                                     |
+| x                          | x                                                     |
+| x                          | x                                                     |
+| x                          | x                                                     |
+| x                          | x                                                     |
 |                            |                                                                                                     |
 | TC39                       | https://tc39.es/ecma262                                                                             |
 | !                          | https://tc39.es/ecma262/#sec-logical-not-operator                                                   |
