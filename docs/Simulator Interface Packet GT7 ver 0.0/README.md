@@ -48,8 +48,7 @@ b"x"[:32]
 
 
 
-## KEYWORD DEFINITIONS 
-### BY ASK BRAVE based on Bernstein
+## Salsa20 Spec
 The canonical Salsa20 spec is Bernstein's original PDF:
 
 **[Salsa20 Specification (2005)](https://cr.yp.to/snuffle/spec.pdf)** — defines the hash function, expansion function, and encryption function from the ground up. This is the one that shows you exactly how the 4×4 state matrix is laid out, how key/nonce/counter are packed in, and how the 20 rounds work.
