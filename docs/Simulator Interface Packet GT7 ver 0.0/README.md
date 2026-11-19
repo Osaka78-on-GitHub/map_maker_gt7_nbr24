@@ -29,7 +29,6 @@ iv1
 
 4,"little"
 
-key,nonce
 
 key
 
@@ -39,41 +38,13 @@ decrypt
 
 plaintext
 
-plain text
 
 b"x"[:32]
 
 ^
 
 
-
-
-## Salsa20 Spec
-As it relates to Simulator Interface Packet GT7 ver 0.0
-
-
-
-
-| KEYWORD | DEFINITIONS |
-|:--|:--|
-| key | A 256-bit (32-byte) secret shared by sender and receiver. Placed into positions 1–4 and 10–13 of the 16-word state array. Used directly in every block; no key expansion or preprocessing. |
-| nonce | A 64-bit "unique message number" (192 bits in XSalsa20). Placed into positions 6–7. Must be unique per message under a given key. In XSalsa20, the first 128 bits feed HSalsa20; the last 64 bits feed Salsa20's counter-mode nonce. |
-| decrypt | Not defined as a separate operation. The spec states: *"Or m can be a ciphertext message, in which case Salsa20k(v) ⊕ m is the original plaintext message."* Decryption is the identical xor, just applied to ciphertext instead of plaintext. |
-| plaintext | The message *m* before encryption. Encrypted by xor'ing each byte with the corresponding byte of the keystream: `c[i] = m[i] ⊕ Salsa20k(v, ⌊i/64⌋)[i mod 64]`. |
-| little | The `littleendian` function: converts a 4-byte sequence `(b₀, b₁, b₂, b₃)` to a 32-bit word `b₀ + 2⁸·b₁ + 2¹⁶·b₂ + 2²⁴·b₃`. Invertible. Used to interpret all byte sequences as words throughout the hash function. |
-
-The canonical Salsa20 spec is Bernstein's original PDF:
-
-**[Salsa20 Specification (2005)](https://cr.yp.to/snuffle/spec.pdf)** — defines the hash function, expansion function, and encryption function from the ground up. This is the one that shows you exactly how the 4×4 state matrix is laid out, how key/nonce/counter are packed in, and how the 20 rounds work.
-
-
-
-**Bernstein footnotes below**
-
-----------------
-
-
-
+## Keywords specific to Simulator Interface Packet GT7 ver 0.0
 
 ------------------------------------
 
@@ -95,255 +66,182 @@ The canonical Salsa20 spec is Bernstein's original PDF:
 
 
 
-"mask" is not found in spec
-
-The Salsa20 family of stream ciphers https://cr.yp.to/snuffle/salsafamily-20071225.pdf
-
-
--------------------------------------
-
-No. **0xDEADBEAF** does not appear anywhere in the document.
-
-It's a well-known **sentinel/debug value** in programming (the "dead beef" pattern) — often used to mark uninitialized memory or as a canary — but it has no role in the Salsa20 paper.
-
-The Salsa20 family of stream ciphers https://cr.yp.to/snuffle/salsafamily-20071225.pdf
-
-
-The Salsa20 family of stream ciphers https://cr.yp.to/snuffle/salsafamily-20071225.pdf
-
-
--------------------------------------------
-
-No. **0xDEADBEEF** does not appear anywhere in the document.
-
-It's the classic **debug sentinel value** in computing (ASCII `"0S7G"` little-endian, or `"0S7G"`… actually bytes `0xEF 0xBE 0xAD 0xDE` → ASCII `"ê¾­Þ"` — not meaningful ASCII). It's used to mark uninitialized or freed memory, as a canary, or as a placeholder. No cryptographic role in Salsa20.
-
-The Salsa20 family of stream ciphers https://cr.yp.to/snuffle/salsafamily-20071225.pdf
-
-----------------------------------
-
-
-
-No. **0x55FABB4F** does not appear anywhere in the document.
-
-Little-endian byte decode: `0x4F 0xBB 0xFA 0x55` — not meaningful ASCII. No role in Salsa20.
-
-The Salsa20 family of stream ciphers https://cr.yp.to/snuffle/salsafamily-20071225.pdf
-
-
-
-
-
-
-----------------
-
-No. **"iv2"** does not appear anywhere in the document.
-
-The paper uses the terms **"nonce"** (64-bit unique message number) and **"block counter"** (64-bit) to describe the per-message/per-block inputs. It never uses "IV" or "iv2" as a label.
-
-The Salsa20 family of stream ciphers https://cr.yp.to/snuffle/salsafamily-20071225.pdf
-
-----------------
-
-
-No. **"iv1"** does not appear anywhere in the document.
-
-Same as "iv2" — the paper never uses "IV" terminology. The relevant inputs are called the **nonce** (64-bit) and the **block counter** (64-bit).
-
-The Salsa20 family of stream ciphers https://cr.yp.to/snuffle/salsafamily-20071225.pdf
-
-
---------------------
-
-
-
-
-
-**"4"** — appears throughout, but always as a count or dimension: "4 key words", "4 × 4 array", "4 parallel 32-bit operations", "4 rounds", etc.
-
-**"little"** — appears once, in §4.1:
-
-> "Strings are always interpreted in **little**-endian form."
-
-The pairing **"4," "little"** as a type/size descriptor (e.g. "4 bytes, little-endian") does **not** appear in the document. That's a notation convention from your own spec, not from Bernstein's paper.
-
-The Salsa20 family of stream ciphers https://cr.yp.to/snuffle/salsafamily-20071225.pdf
-
---------------------
-
-
-
-
-
-
-
-
 
 # GT7 ABOVE
 
-# Undecided below
+## Salsa20 Spec as it relates to Simulator Interface Packet GT7 ver 0.0
 
---------------------------------
+| KEYWORD | DEFINITIONS |
+|:--|:--|
+| key | A 256-bit (32-byte) secret shared by sender and receiver. Placed into positions 1–4 and 10–13 of the 16-word state array. Used directly in every block; no key expansion or preprocessing. |
+| nonce | A 64-bit "unique message number" (192 bits in XSalsa20). Placed into positions 6–7. Must be unique per message under a given key. In XSalsa20, the first 128 bits feed HSalsa20; the last 64 bits feed Salsa20's counter-mode nonce. |
+| decrypt | Not defined as a separate operation. The spec states: *"Or m can be a ciphertext message, in which case Salsa20k(v) ⊕ m is the original plaintext message."* Decryption is the identical xor, just applied to ciphertext instead of plaintext. |
+| plaintext | The message *m* before encryption. Encrypted by xor'ing each byte with the corresponding byte of the keystream: `c[i] = m[i] ⊕ Salsa20k(v, ⌊i/64⌋)[i mod 64]`. |
+| little | The `littleendian` function: converts a 4-byte sequence `(b₀, b₁, b₂, b₃)` to a 32-bit word `b₀ + 2⁸·b₁ + 2¹⁶·b₂ + 2²⁴·b₃`. Invertible. Used to interpret all byte sequences as words throughout the hash function. |
 
-No. **"key,nonce"** as a single token/label does not appear.
+The canonical Salsa20 spec is Bernstein's original PDF:
 
-The document uses them as separate words in phrases like:
+**[Salsa20 Specification (2005)](https://cr.yp.to/snuffle/spec.pdf)** — defines the hash function, expansion function, and encryption function from the ground up. This is the one that shows you exactly how the 4×4 state matrix is laid out, how key/nonce/counter are packed in, and how the 20 rounds work.
 
-> "the key, the nonce, and a 64-bit block number"
+**Bernstein footnotes below**
 
-> "the key, nonce, and block counter"
+-------------
 
-But never as a combined identifier or field name like `key,nonce`. That's your own spec's notation.
+## Keywords NOT found in Salsa20 Specification
 
-The Salsa20 family of stream ciphers https://cr.yp.to/snuffle/salsafamily-20071225.pdf
+[Salsa20 Specification (2005)](https://cr.yp.to/snuffle/spec.pdf)
 
+|  |  |
+|:---|:---|
+| mask |  |
+| 0xDEADBEAF | It's a well-known **sentinel/debug value** in programming (the "dead beef" pattern) — often used to mark uninitialized memory or as a canary |
+| 0xDEADBEEF | It's the classic **debug sentinel value** in computing (ASCII `"0S7G"` little-endian, or `"0S7G"`… actually bytes `0xEF 0xBE 0xAD 0xDE` → ASCII `"ê¾­Þ"` — not meaningful ASCII). It's used to mark uninitialized or freed memory, as a canary, or as a placeholder. No cryptographic role in Salsa20. |
+| 0x55FABB4F | Little-endian byte decode: `0x4F 0xBB 0xFA 0x55` — not meaningful ASCII. No role in Salsa20. |
+| iv2 | Salsa20 spec uses the terms **"nonce"** (64-bit unique message number) and **"block counter"** (64-bit) to describe the per-message/per-block inputs. Salsa20 spec never uses "IV" or "iv2" as a label. |
+| iv1 | Salsa20 spec never uses "IV" terminology. The relevant inputs are called the **nonce** (64-bit) and the **block counter** (64-bit). |
+| 4 | Salsa20 spec uses "4" throughout, but always as a count or dimension: "4 key words", "4 × 4 array", "4 parallel 32-bit operations", "4 rounds", etc. |
 
----------------------------------
 
-Yes. **"key"** appears many times throughout the document, but always as a general term in prose, not as a field name or identifier. Examples:
+|Array words | Value  |
+|:---|:---|
+| secret key | Simulator Interface Packet GT7 ver 0.0 |
+| block-counter words | 0 |
 
-- "A sender and receiver share a short secret **key**."
-- "the first 4 **key** words"
-- "Salsa20 can use a 16-byte **key**, repeated to form a 32-byte **key**"
-- "I recommend 256-bit **keys**"
-- "Salsa20 puts its **key** *k* and its nonce/counter *n* into a single array"
+[Salsa20 Specification (2005)](https://cr.yp.to/snuffle/spec.pdf)
 
-It's never used as a standalone label or field name (e.g. `key:` or `"key"` as a struct member). That's your own spec's notation.
+*NOTE: The terms 'seed' and 'mask' are slang and not part of the [Salsa20 Specification (2005)](https://cr.yp.to/snuffle/spec.pdf).*
 
-The Salsa20 family of stream ciphers https://cr.yp.to/snuffle/salsafamily-20071225.pdf
+|Heartbeat | mask | bytes |
+|:---|:---|:---|
+| A | 0xDEADBEAF | 296 |
+| B | 0xDEADBEEF | 316 |
+| ~ | 0x55FABB4F | 344 |
+| C | 0xDEADBEEF | 368* |
 
+*Heartbeat and packet sizes in bytes.*
 
-------------------------------------
+*Your first three rows are **confirmed correct** by multiple independent sources (MacManley, Nenkai/PDTools, Bornhall, ApexNorth, those-who-run/salsa):
 
+| Heartbeat | Mask | Bytes |
+|:---|:---|:---|
+| A | 0xDEADBEAF | 296 |
+| B | 0xDEADBEEF | 316 |
+| ~ | 0x55FABB4F | 344 |
 
+The **C row is the problem**. The C packet is confirmed to exist (added around Update ~1.68, per MacManley/gt7-udp), but **no source I can find documents its mask or byte size**. Your table claims `0xDEADBEEF / 368` — that's unverified. It's also suspicious that C shares B's mask exactly; the pattern so far has been one unique mask per type.
 
 
-# Undecided above
+-------------------
 
-# SALSA20 BELOW
-# The Salsa20 family of stream ciphers
-The Salsa20 family of stream ciphers https://cr.yp.to/snuffle/salsafamily-20071225.pdf
+Here's the consolidated reference, cross-checked across MacManley, Nenkai/PDTools, Bornhall, those-who-run/salsa, ThrottleGeist, and AziCool:
 
+## GT7 SIP — Verified Facts
 
-Expressing the GT7 process using only terminology from Bernstein's *The Salsa family of stream ciphers*: https://cr.yp.to/snuffle/salsafamily-20071225.pdf
+**Cipher:** Salsa20 (20 rounds, 256-bit key, 64-bit nonce, block counter = 0)
 
-Salsa20 is used as the **stream cipher**. A **128-bit key** is derived from the string "Simulator Interface Packet GT7 ver 0.0". For each **256-bit block**, Salsa20's **core** (20 rounds of **ARF** — add-rotate-feedback, followed by **whitening**) produces a **256-bit output**. The **keystream** is the concatenation of these outputs. The **plaintext** is obtained by XORing the **ciphertext** with the **keystream**.
+**Key:** first 32 bytes of `"Simulator Interface Packet GT7 ver 0.0"`
+→ `"Simulator Interface Packet GT7 v"` (32 bytes)
 
-The first 32 bits of the **plaintext** are checked: if they equal `0x47375330`, the **decryption** is valid.
+**Seed (nonce source):** little-endian uint32 at byte offset `0x40` of the received datagram
 
------------------------------------------------
+**Nonce (8 bytes):** `uint32le(seed ^ mask) ‖ uint32le(seed)`
 
-It's a **research paper** (or **technical report**). Specifically, it's an **eSTREAM submission** — the design description and rationale document that Bernstein submitted to the ECRYPT Stream Cipher Project in 2005, revised 2007.
+**Magic check (post-decrypt):** `int32le(decrypted[0:4]) == 0x47375330` (ASCII `"G7S0"` little-endian)
 
-It's not:
-- a formal **specification** (no normative "MUST/SHALL" language, no conformance test vectors as a primary purpose)
-- a **standard** (not issued by NIST, IETF, ISO, etc.)
-- a **whitepaper** in the vendor-marketing sense
+**Ports:** send heartbeat → `33739`, receive packets → `33740`
 
-It's closest to what you'd call a **design paper** or **technical description** — the kind of document that accompanies a cipher submission to a public review process. It explains *what* the cipher does, *why* each design choice was made, and *what* is known about its security.
+**Heartbeat:** send ASCII byte (`A`, `B`, `~`, or `C`) to PS IP:33739 ~1 Hz
 
-The Salsa20 family of stream ciphers https://cr.yp.to/snuffle/salsafamily-20071225.pdf
+### Packet types
 
+| Type | Bytes | Mask | Status |
+|:---|:---|:---|:---|
+| A | 296 (0x128) | `0xDEADBEAF` | Fully confirmed (all sources) |
+| B | 316 (0x13C) | `0xDEADBEEF` | Fully confirmed (all sources) |
+| ~ | 344 (0x158) | `0x55FABB4F` | Fully confirmed (all sources) |
+| C | 368 (0x170) | **undocumented** | Size confirmed (ThrottleGeist, AziCool); mask not stated in any public source |
 
+### Your table, corrected
 
+| Heartbeat | Mask | Bytes |
+|:---|:---|:---|
+| A | 0xDEADBEAF | 296 |
+| B | 0xDEADBEEF | 316 |
+| ~ | 0x55FABB4F | 344 |
+| C | **unknown** | 368 |
 
-----------------------------------------
+The C size (368) is solid. The C mask is the one gap. Every source that documents masks stops at ~. If you have a live C capture, you can brute-force it the same way Nenkai found B's mask (Issue #14: "After some short bruteforce... 0xDEADBEAF is replaced by 0xDEADBEEF") — try each candidate mask, decrypt, check for magic `0x47375330`.
 
-Yes. **"key"** appears many times throughout the document, but always as a general term in prose, not as a field name or identifier. Examples:
+### Best single-source references
 
-- "A sender and receiver share a short secret **key**."
-- "the first 4 **key** words"
-- "Salsa20 can use a 16-byte **key**, repeated to form a 32-byte **key**"
-- "I recommend 256-bit **keys**"
-- "Salsa20 puts its **key** *k* and its nonce/counter *n* into a single array"
+- **MacManley/gt7-udp** — most complete written documentation (A, B, ~ field offsets + encryption details)
+- **those-who-run/salsa PR #4** — cross-reference table comparing 4 independent implementations, useful for verifying you haven't mixed up conventions
+- **Nenkai/PDTools** — original researcher, .NET reference implementation
 
-It's never used as a standalone label or field name (e.g. `key:` or `"key"` as a struct member). That's your own spec's notation.
+There is no single doc that covers all four types with full field offsets. MacManley is closest for A/B/~; C's field layout appears to be documented only in the relay/telemetry repos (ThrottleGeist, AziCool) as "extended stream" without a full offset table.
 
-The Salsa20 family of stream ciphers https://cr.yp.to/snuffle/salsafamily-20071225.pdf
+----------------------------
 
 
 
----------------------------------------------
 
-Yes. **"nonce"** appears multiple times in the document, always as a general term in prose:
 
-- "Salsa20 expands a 256-bit key and a 64-bit **nonce** (unique message number) into a 270-byte stream."
-- "the key, the **nonce**, and a 64-bit block number"
-- "the 2 **nonce** words"
-- "Salsa20 puts its key *k* and its **nonce**/counter *n* into a single array"
-- "Salsa20 also does not preprocess the **nonce** before generating a block"
+OSKAK78 says, "each developer does it a bit different
+iv1 = int.from_bytes(SIP_raw[0x40:0x44], "little")
+and so on"
 
-It's never used as a standalone field name or identifier (e.g. `nonce:` or `"nonce"` as a struct member). That's your own spec's notation.
+ASKBRAVE says "Yes. That's exactly the spec's `littleendian` function applied to 4 bytes at an implementation-defined offset."
 
-The Salsa20 family of stream ciphers https://cr.yp.to/snuffle/salsafamily-20071225.pdf
+Mapping it:
 
----------------------------------------------
+| Python | Spec equivalent |
+|:---|:---|
+| `SIP_raw[0x40:0x44]` | 4-byte sequence `b` (GT7-internal: where the nonce bytes live in the packet) |
+| `int.from_bytes(..., "little")` | `littleendian(b₀, b₁, b₂, b₃) = b₀ + 2⁸b₁ + 2¹⁶b₂ + 2²⁴b₃` |
+| `iv1` | word at array position 6 |
 
-Yes. **"decrypt"** / **"decryption"** appears in the document:
+The spec only says "positions 6–7 are a 64-bit nonce, interpreted in little-endian form." *Where* those bytes come from in a GT7 packet, *what* `mask` is, and *whether* it's 4 or 8 bytes of seed — that's all developer-specific. Bernstein never specifies packet layout.
 
-- §3.1: "It **decrypts** a b-byte ciphertext by xor'ing the ciphertext with the first b bytes of the stream."
-- §3.2 heading: "Should encryption and **decryption** be different?"
-- §3.2: "One disadvantage of CBC is that it requires different code for encryption and **decryption**"
-- §3.3: "Phelix provided impressive speeds for authenticated encryption and verified **decryption**"
 
-The key operational statement is the first one — decryption is the same xor as encryption, just applied to the ciphertext instead of the plaintext. No separate decryption algorithm exists.
 
-The Salsa20 family of stream ciphers https://cr.yp.to/snuffle/salsafamily-20071225.pdf
 
-------------------------------------
 
 
 
 
 
-**`[0x40:0x44]`** — No. That hex byte-offset notation does not appear in the document. The doc describes the array layout by word position (0–15), not by hex byte offset.
 
-**"little"** — Yes. §4.1 states:
 
-> "Strings are always interpreted in **little**-endian form."
 
-That's the only occurrence.
 
 
-The Salsa20 family of stream ciphers https://cr.yp.to/snuffle/salsafamily-20071225.pdf
 
 
 
 
----------------------------
 
-**"plaintext"** (one word) — Yes, appears many times:
 
-- "that produces the first ciphertext from the key and the first **plaintext**"
-- "It encrypts a b-byte **plaintext** by xor'ing the **plaintext** with the first b bytes of the stream"
-- "The **plaintext** and ciphertext do not affect the stream"
-- "Some ciphers mangle **plaintext** in a more complicated way"
-- "the nth **plaintext** block *pₙ*"
-- "Incorporating the **plaintext** into the stream takes time for every block"
 
-**"plain text"** (two words) — No. The document always uses the single-word form **"plaintext"**.
 
-The Salsa20 family of stream ciphers https://cr.yp.to/snuffle/salsafamily-20071225.pdf
 
---------------------------
 
 
-**"plain text"** (two words) — No. It does not appear anywhere in the document.
 
-Only the single-word form **"plaintext"** is used, consistently, throughout.
 
-The Salsa20 family of stream ciphers https://cr.yp.to/snuffle/salsafamily-20071225.pdf
 
----------------------------
-The Salsa20 family of stream ciphers https://cr.yp.to/snuffle/salsafamily-20071225.pdf
 
 
-# END OF The Salsa20 family of stream ciphers
+
+
+
+
+
+
+
 
 # UNKnown Below
+------------------------------------------------------
 
-
-start ask brave guess
 | position | word | value | source |
 |:---|:---|:---|:---|
 | 0 | constant word | 0x61707865 | doc |
@@ -363,16 +261,8 @@ start ask brave guess
 | 14 | key word | 0x76203754 | key[28:32] "T7 v" |
 | 15 | constant word | 0x6B206574 | doc |
 
-key = b"Simulator Interface Packet GT7 ver 0.0"[:32]
-mask = 0xDEADBEAF (296), 0xDEADBEEF (316), 0x55FABB4F (344)
-rounds = 20
 
-
-
-
-end abg
-start
-The "value" column is just the 32-bit little-endian integer representation of the bytes that go into that position of the Salsa20 state array. It's not AI nonsense — it's the standard way to show the 16×32-bit words that initialize the cipher.
+*The "value" column is just the 32-bit little-endian integer representation of the bytes that go into that position of the Salsa20 state array. It's not AI nonsense — it's the standard way to show the 16×32-bit words that initialize the cipher.*
 
 Here's what each type means:
 
@@ -401,8 +291,8 @@ Here's what each type means:
 This layout matches the standard Salsa20-256 state initialization exactly (4 constants on the main diagonal, 8 key words, 2 nonce words, 2 counter words), as confirmed by Bernstein's original paper and the GT7-specific decryption implementations (gt-telem, PDTools, gt7-udp).
 
 
-end
-start
+------------------------------------
+
 Every value in column 3 is just 4 bytes read as a little-endian uint32. Flipping the byte order gives you the ASCII:
 
 | Pos | Hex | Bytes (LE) | ASCII |
@@ -433,8 +323,8 @@ Positions 5–6 are runtime values (the seed from the UDP packet header), and 7�
 
 
 
-end
-start 
+---------------------------------------------
+
 **Position 3 = key word 3 (0-indexed), i.e. key bytes [8:12]**
 
 Per §4.1, the initial 16-word array is laid out as:
@@ -459,37 +349,11 @@ No transformation is applied at this stage — it's a raw slice of the key place
 
 
 
-end
+-----------------------------------------
 
 
 
-|Array words | Value  |
-|:---|:---|
-| secret key | Simulator Interface Packet GT7 ver 0.0 |
-| block-counter words | 0 |
 
-*The key words and block-counter words of the array.* https://cr.yp.to/snuffle/salsafamily-20071225.pdf
-
-|Packet | mask | bytes |
-|:---|:---|:---|
-| A | 0xDEADBEAF | 296 |
-| B | 0xDEADBEEF | 316 |
-| ~ | 0x55FABB4F | 344 |
-| C | 0xDEADBEEF | 368 |
-
-*Packet, masks and byte sizes.* https://cr.yp.to/snuffle/salsafamily-20071225.pdf
-
-|Stream Cipher|Value|
-|:---|:---|
-| rounds | 20 |
-
-**Values assigned to the key, block-counter, and rounds of the 20-round stream cipher.*
-https://cr.yp.to/snuffle/salsafamily-20071225.pdf
-
-|State component | Value  |
-|:---|:---|
-| seed offset | 0x40 |
-| nonce formula | le32(seed^mask) + le32(seed) |
 
 
 
@@ -663,8 +527,7 @@ Constants are the ASCII string `"expand 32-byte k"` split into four LE u32s.
 
 ### Reference links
 
-- Salsa20 spec (Bernstein): [cr.yp.to/snuffle/salsafamily-20071225.pdf](https://cr.yp.to/snuffle/salsafamily-20071225.pdf)
-- Wikipedia: [en.wikipedia.org/wiki/Salsa20](https://en.wikipedia.org/wiki/Salsa20)
+
 - Go implementation with GT7-specific nonce logic: [those-who-run/salsa PR #4](https://github.com/those-who-run/salsa/pull/4) — has a cross-reference table comparing all implementations
 - Python gist with full working decode: [gist.github.com/Hyurt/7f6ba61c4af3f6ad5c86271957ab6adb](https://gist.github.com/Hyurt/7f6ba61c4af3f6ad5c86271957ab6adb)
 
@@ -673,26 +536,30 @@ Constants are the ASCII string `"expand 32-byte k"` split into four LE u32s.
 
 
 
+## Unknown above
 
+## Python
 
+|  |   |
+|:---|:---|
+| b"x"[:32] | 
+| b | https://docs.python.org/3/reference/lexical_analysis.html#string-prefixes |
+| [:32] | https://docs.python.org/3/reference/expressions.html#slicings |
+| ^ | https://docs.python.org/3/reference/expressions.html#binary-bitwise-operations |
 
-# Unknown above
-# Python Language Below
+**`b"x"[:32]`** does not appear anywhere in the [Salsa20 specification](https://cr.yp.to/snuffle/spec.pdf).
 
-No. **`b"x"[:32]`** does not appear anywhere in the document.
+Python byte-literal slice notation.
 
-That's Python byte-literal slice notation. The paper is written entirely in prose and mathematical notation — it contains no code in any programming language.
+The **`^`** character does not appear anywhere in the [Salsa20 specification](https://cr.yp.to/snuffle/spec.pdf).
 
-The Salsa20 family of stream ciphers https://cr.yp.to/snuffle/salsafamily-20071225.pdf
+The paper uses **superscript** notation for exponents (e.g. 2³², 2⁶⁴, 2¹⁵³, 2²⁴⁹) — when pasted as plain text those superscripts lost their formatting and appear as bare numbers like "232", "264", "2153", etc. But the caret symbol itself is never used.
 
 ---------------
 
 
-No. The **`^`** character does not appear anywhere in the document.
 
-The paper uses **superscript** notation for exponents (e.g. 2³², 2⁶⁴, 2¹⁵³, 2²⁴⁹) — when pasted as plain text those superscripts lost their formatting and appear as bare numbers like "232", "264", "2153", etc. But the caret symbol itself is never used.
 
-The Salsa20 family of stream ciphers https://cr.yp.to/snuffle/salsafamily-20071225.pdf
 
 
 ## FOOTNOTES
@@ -860,6 +727,161 @@ https://cr.yp.to/snuffle/spec.pdf
 
 -------------------------------------------
 
+--------------------------------
 
+No. **"key,nonce"** as a single token/label does not appear.
+
+The document uses them as separate words in phrases like:
+
+> "the key, the nonce, and a 64-bit block number"
+
+> "the key, nonce, and block counter"
+
+But never as a combined identifier or field name like `key,nonce`. That's your own spec's notation.
+
+The Salsa20 family of stream ciphers https://cr.yp.to/snuffle/salsafamily-20071225.pdf
+
+
+---------------------------------
+
+Yes. **"key"** appears many times throughout the document, but always as a general term in prose, not as a field name or identifier. Examples:
+
+- "A sender and receiver share a short secret **key**."
+- "the first 4 **key** words"
+- "Salsa20 can use a 16-byte **key**, repeated to form a 32-byte **key**"
+- "I recommend 256-bit **keys**"
+- "Salsa20 puts its **key** *k* and its nonce/counter *n* into a single array"
+
+It's never used as a standalone label or field name (e.g. `key:` or `"key"` as a struct member). That's your own spec's notation.
+
+The Salsa20 family of stream ciphers https://cr.yp.to/snuffle/salsafamily-20071225.pdf
+
+
+------------------------------------
+
+
+
+
+
+
+# SALSA20 BELOW
+# The Salsa20 family of stream ciphers
+The Salsa20 family of stream ciphers https://cr.yp.to/snuffle/salsafamily-20071225.pdf
+
+
+Expressing the GT7 process using only terminology from Bernstein's *The Salsa family of stream ciphers*: https://cr.yp.to/snuffle/salsafamily-20071225.pdf
+
+Salsa20 is used as the **stream cipher**. A **128-bit key** is derived from the string "Simulator Interface Packet GT7 ver 0.0". For each **256-bit block**, Salsa20's **core** (20 rounds of **ARF** — add-rotate-feedback, followed by **whitening**) produces a **256-bit output**. The **keystream** is the concatenation of these outputs. The **plaintext** is obtained by XORing the **ciphertext** with the **keystream**.
+
+The first 32 bits of the **plaintext** are checked: if they equal `0x47375330`, the **decryption** is valid.
+
+-----------------------------------------------
+
+It's a **research paper** (or **technical report**). Specifically, it's an **eSTREAM submission** — the design description and rationale document that Bernstein submitted to the ECRYPT Stream Cipher Project in 2005, revised 2007.
+
+It's not:
+- a formal **specification** (no normative "MUST/SHALL" language, no conformance test vectors as a primary purpose)
+- a **standard** (not issued by NIST, IETF, ISO, etc.)
+- a **whitepaper** in the vendor-marketing sense
+
+It's closest to what you'd call a **design paper** or **technical description** — the kind of document that accompanies a cipher submission to a public review process. It explains *what* the cipher does, *why* each design choice was made, and *what* is known about its security.
+
+The Salsa20 family of stream ciphers https://cr.yp.to/snuffle/salsafamily-20071225.pdf
+
+
+
+
+----------------------------------------
+
+Yes. **"key"** appears many times throughout the document, but always as a general term in prose, not as a field name or identifier. Examples:
+
+- "A sender and receiver share a short secret **key**."
+- "the first 4 **key** words"
+- "Salsa20 can use a 16-byte **key**, repeated to form a 32-byte **key**"
+- "I recommend 256-bit **keys**"
+- "Salsa20 puts its **key** *k* and its nonce/counter *n* into a single array"
+
+It's never used as a standalone label or field name (e.g. `key:` or `"key"` as a struct member). That's your own spec's notation.
+
+The Salsa20 family of stream ciphers https://cr.yp.to/snuffle/salsafamily-20071225.pdf
+
+
+
+---------------------------------------------
+
+Yes. **"nonce"** appears multiple times in the document, always as a general term in prose:
+
+- "Salsa20 expands a 256-bit key and a 64-bit **nonce** (unique message number) into a 270-byte stream."
+- "the key, the **nonce**, and a 64-bit block number"
+- "the 2 **nonce** words"
+- "Salsa20 puts its key *k* and its **nonce**/counter *n* into a single array"
+- "Salsa20 also does not preprocess the **nonce** before generating a block"
+
+It's never used as a standalone field name or identifier (e.g. `nonce:` or `"nonce"` as a struct member). That's your own spec's notation.
+
+The Salsa20 family of stream ciphers https://cr.yp.to/snuffle/salsafamily-20071225.pdf
+
+---------------------------------------------
+
+Yes. **"decrypt"** / **"decryption"** appears in the document:
+
+- §3.1: "It **decrypts** a b-byte ciphertext by xor'ing the ciphertext with the first b bytes of the stream."
+- §3.2 heading: "Should encryption and **decryption** be different?"
+- §3.2: "One disadvantage of CBC is that it requires different code for encryption and **decryption**"
+- §3.3: "Phelix provided impressive speeds for authenticated encryption and verified **decryption**"
+
+The key operational statement is the first one — decryption is the same xor as encryption, just applied to the ciphertext instead of the plaintext. No separate decryption algorithm exists.
+
+The Salsa20 family of stream ciphers https://cr.yp.to/snuffle/salsafamily-20071225.pdf
+
+------------------------------------
+
+
+
+
+
+**`[0x40:0x44]`** — No. That hex byte-offset notation does not appear in the document. The doc describes the array layout by word position (0–15), not by hex byte offset.
+
+**"little"** — Yes. §4.1 states:
+
+> "Strings are always interpreted in **little**-endian form."
+
+That's the only occurrence.
+
+
+The Salsa20 family of stream ciphers https://cr.yp.to/snuffle/salsafamily-20071225.pdf
+
+
+
+
+---------------------------
+
+**"plaintext"** (one word) — Yes, appears many times:
+
+- "that produces the first ciphertext from the key and the first **plaintext**"
+- "It encrypts a b-byte **plaintext** by xor'ing the **plaintext** with the first b bytes of the stream"
+- "The **plaintext** and ciphertext do not affect the stream"
+- "Some ciphers mangle **plaintext** in a more complicated way"
+- "the nth **plaintext** block *pₙ*"
+- "Incorporating the **plaintext** into the stream takes time for every block"
+
+**"plain text"** (two words) — No. The document always uses the single-word form **"plaintext"**.
+
+The Salsa20 family of stream ciphers https://cr.yp.to/snuffle/salsafamily-20071225.pdf
+
+--------------------------
+
+
+**"plain text"** (two words) — No. It does not appear anywhere in the document.
+
+Only the single-word form **"plaintext"** is used, consistently, throughout.
+
+The Salsa20 family of stream ciphers https://cr.yp.to/snuffle/salsafamily-20071225.pdf
+
+---------------------------
+The Salsa20 family of stream ciphers https://cr.yp.to/snuffle/salsafamily-20071225.pdf
+
+
+# END OF The Salsa20 family of stream ciphers
 
 
