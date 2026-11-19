@@ -49,9 +49,8 @@ b"x"[:32]
 
 
 ## Salsa20 Spec
-The canonical Salsa20 spec is Bernstein's original PDF:
+As it relates to Simulator Interface Packet GT7 ver 0.0
 
-**[Salsa20 Specification (2005)](https://cr.yp.to/snuffle/spec.pdf)** — defines the hash function, expansion function, and encryption function from the ground up. This is the one that shows you exactly how the 4×4 state matrix is laid out, how key/nonce/counter are packed in, and how the 20 rounds work.
 
 
 
@@ -63,9 +62,11 @@ The canonical Salsa20 spec is Bernstein's original PDF:
 | plaintext | The message *m* before encryption. Encrypted by xor'ing each byte with the corresponding byte of the keystream: `c[i] = m[i] ⊕ Salsa20k(v, ⌊i/64⌋)[i mod 64]`. |
 | little | The `littleendian` function: converts a 4-byte sequence `(b₀, b₁, b₂, b₃)` to a 32-bit word `b₀ + 2⁸·b₁ + 2¹⁶·b₂ + 2²⁴·b₃`. Invertible. Used to interpret all byte sequences as words throughout the hash function. |
 
+The canonical Salsa20 spec is Bernstein's original PDF:
+
+**[Salsa20 Specification (2005)](https://cr.yp.to/snuffle/spec.pdf)** — defines the hash function, expansion function, and encryption function from the ground up. This is the one that shows you exactly how the 4×4 state matrix is laid out, how key/nonce/counter are packed in, and how the 20 rounds work.
 
 
-All at `cr.yp.to` (Bernstein's site). The 2005 `spec.pdf` is the one you want for understanding the state layout and how `key`, `nonce`, `counter` map into the 16-word matrix.
 
 **Bernstein footnotes below**
 
@@ -707,33 +708,31 @@ Companion documents from the same author:
 | **Salsa20/8 and /12** | [cr.yp.to/snuffle/812.pdf](https://cr.yp.to/snuffle/812.pdf) | Reduced-round variants |
 | **XSalsa20** (nonce extension) | [cr.yp.to/snuffle/xsalsa-20081128.pdf](https://cr.yp.to/snuffle/xsalsa-20081128.pdf) | How to extend the 8-byte nonce to 24 bytes via HSalsa20 |
 
+All at `cr.yp.to` (Bernstein's site). The 2005 `spec.pdf` is the one you want for understanding the state layout and how `key`, `nonce`, map into the 16-keyword matrix.
 ------
-**In Bernstein's documents (either or both):**
+**In Bernstein's documents:**
 
-little
-key
-nonce
-decrypt
-plaintext
+`little`
+`key`
+`nonce`
+`decrypt`
+`plaintext`
 
 **Not in Bernstein's documents:**
 
-0x47375330
-296
-316
-344
-[0x40:0x44]
-mask
-0xDEADBEAF
-0xDEADBEEF
-0x55FABB4F
-iv2
-iv1
-4,"little"
-key,nonce
-plain text
-b"x"[:32]
-^
+`0x47375330`
+`296`
+`316`
+`344`
+`[0x40:0x44]`
+`mask`
+`0xDEADBEAF`
+`0xDEADBEEF`
+`0x55FABB4F`
+`iv2`
+`iv1`
+`b"x"[:32]`
+`^`
 
 5 in, 16 out. The "in" group are the only terms from your list that Bernstein actually uses as words in his prose. The rest are all from your own spec/implementation notation.
 
@@ -787,19 +786,11 @@ https://cr.yp.to/snuffle/812.pdf
 
 
 
-No. Same picture — no new terms from your list appear, and nothing in this doc redefines or extends the meaning of the 4 that do.
-
 The one thing it adds contextually is an explicit **operational split**: "set up key, set up nonce, and encrypt" are listed as three distinct phases (the "40k" benchmark). And in the hardware section it states:
 
 > "The key is read only twice for each 512-bit block, once at the beginning and once at the end"
 
 That's the only place across all three docs where the "add the original array back" final step is described in those terms. But it doesn't introduce any new vocabulary from your list.
-
-LIST
-- key
-- nonce
-- decrypt
-- plaintext
 
 -----------------------------------
 
@@ -826,15 +817,7 @@ The "little" appears in the "Review of Salsa20" section:
 
 "decrypt" and "plaintext" don't appear at all — this paper is about the nonce extension and security proofs, not about the encryption/decryption model.
 
-So across all four docs, the full picture is:
 
-| Term | 2005 design | 2006 Salsa20/8 | 2007 family | 2008 XSalsa20 |
-|------|:-:|:-:|:-:|:-:|
-| key | ✓ | ✓ | ✓ | ✓ |
-| nonce | ✓ | ✓ | ✓ | ✓ |
-| decrypt | ✓ | ✓ | ✓ | — |
-| plaintext | ✓ | ✓ | ✓ | — |
-| little | — | — | ✓ | ✓ |
 
 
 The main diff is the **nonce size**: 64 bits → 192 bits.
@@ -847,15 +830,13 @@ It achieves this with a **two-level cascade**:
 So the 192-bit nonce is split: 128 bits go into HSalsa20, 64 bits go into Salsa20's counter-mode nonce. The streaming speed is unchanged; the only cost is one extra HSalsa20 computation per message (slightly cheaper than one full Salsa20 block).
 
 
-----------------------------------
+
 
 Salsa20 specification
 
 Daniel J. Bernstein
 
 https://cr.yp.to/snuffle/spec.pdf
-
-Same 4, minus one, plus a new form:
 
 **Present:**
 - key
@@ -867,8 +848,6 @@ Same 4, minus one, plus a new form:
 - ~~decrypt~~ — not in this doc. The inverse is stated without the word: *"Or m can be a ciphertext message, in which case Salsa20k(v) ⊕ m is the original plaintext message."*
 
 **Notable:** This is the only doc that gives "little" a **formal definition** as a named function with inputs/outputs/examples, rather than a prose mention. It's the one doc from your list that could actually be called a **specification** — the others are design papers or proposals.
-
-Updated table:
 
 | Term | 2005 spec | 2005 design | 2006 Salsa20/8 | 2007 family | 2008 XSalsa20 |
 |------|:-:|:-:|:-:|:-:|:-:|
