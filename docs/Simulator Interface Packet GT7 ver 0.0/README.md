@@ -68,7 +68,7 @@ The canonical Salsa20 spec is Bernstein's original PDF:
 
 All at `cr.yp.to` (Bernstein's site). The 2005 `spec.pdf` is the one you want for understanding the state layout and how `key`, `nonce`, `counter` map into the 16-word matrix.
 
-**[Bernstein footnotes below](https://github.com/Osaka78-on-GitHub/map_maker_gt7_nbr24/blob/main/docs/Simulator%20Interface%20Packet%20GT7%20ver%200.0/README.md#bernstein-footnotes-1)**
+**Bernstein footnotes below**
 
 ----------------
 
