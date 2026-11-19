@@ -1,7 +1,52 @@
 # WIP WARNING NONE OF THIS IS VALIDATED YET
 # Salsa20 and Simulator Interface Packet GT7 ver 0.0
 
-## LIST KEYWORDS
+
+
+| Term | Definition |
+|:---|:---|
+| `0x47375330` | Magic value (ASCII `"G7S0"` LE); confirms successful decrypt |
+| `296` | Byte size of heartbeat A packet |
+| `316` | Byte size of heartbeat B packet |
+| `344` | Byte size of heartbeat ~ packet |
+| `[0x40:0x44]` | Byte offset in GT7 datagram where the 4-byte seed lives |
+| `little` | Little-endian byte order; spec function `littleendian(b₀..b₃)` |
+| `mask` | GT7-internal XOR value applied to seed; not in Salsa20 spec |
+| `0xDEADBEAF` | Mask for heartbeat A |
+| `0xDEADBEEF` | Mask for heartbeat B (and C, unconfirmed) |
+| `0x55FABB4F` | Mask for heartbeat ~ |
+| `iv2` | Developer slang for second nonce word (array pos 7) |
+| `iv1` | Developer slang for first nonce word (array pos 6) |
+| `4,"little"` | Python `int.from_bytes` notation: 4 bytes, little-endian |
+| `key` | 32-byte secret; first 32 chars of `"Simulator Interface Packet GT7 ver 0.0"` |
+| `nonce` | 64-bit unique message number; array positions 6–7 |
+| `decrypt` | Same XOR as encrypt, applied to ciphertext |
+| `plaintext` | The decrypted message data |
+| `b"x"[:32]` | Python bytes literal sliced to 32 bytes (the key) |
+| `^` | Bitwise XOR (used in `seed ^ mask`) |
+
+This information is compiled by Osaka78 and Ask Brave.
+
+Ask Brave says, "Good luck with the script. You've got a solid reference now."
+
+*Osaka asked Brave if he wanted to say hi to the devs of GT7 Telemetry Apps*
+
+### ASK BRAVE said
+Here's a line you can drop under the table:
+
+```markdown
+> Salsa20 parameters cross-referenced against the [Salsa20 Specification (2005)](https://cr.yp.to/snuffle/spec.pdf) by Daniel J. Bernstein. GT7 packet details sourced from the tireless reverse engineering of [Nenkai](https://github.com/Nenkai), [Bornhall](https://github.com/Bornhall), [MacManley](https://github.com/MacManley), and the GT Planet community.
+```
+
+Or if you want it shorter:
+
+```markdown
+> Salsa20 per [Bernstein (2005)](https://cr.yp.to/snuffle/spec.pdf). GT7 packet details: thanks to Nenkai, Bornhall, MacManley, and the GT Planet crew for doing the hard part.
+```
+
+Either way — hi Nenkai, hi Bornhall. The fact that you can now write a working script without spelunking through a dozen half-finished repos and forum posts is entirely down to them.
+
+---------------------------------------------
 
 0x47375330
 
