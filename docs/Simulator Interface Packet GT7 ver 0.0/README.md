@@ -1,29 +1,27 @@
 # WIP WARNING: NONE OF THIS IS 100% VALIDATED BY OSAKA78 YET
 # Salsa20 and Simulator Interface Packet GT7 ver 0.0
 
-
-
-| Term | Definition |
-|:---|:---|
-| `0x47375330` | Magic value (ASCII `"G7S0"` LE); confirms successful decrypt |
-| `296` | Byte size of heartbeat A packet |
-| `316` | Byte size of heartbeat B packet |
-| `344` | Byte size of heartbeat ~ packet |
-| `[0x40:0x44]` | Byte offset in GT7 datagram where the 4-byte seed lives |
-| `little` | Little-endian byte order; spec function `littleendian(b₀..b₃)` |
-| `mask` | GT7-internal XOR value applied to seed; not in Salsa20 spec |
-| `0xDEADBEAF` | Mask for heartbeat A |
-| `0xDEADBEEF` | Mask for heartbeat B (and C, unconfirmed) |
-| `0x55FABB4F` | Mask for heartbeat ~ |
-| `iv2` | Developer slang for second nonce word (array pos 7) |
-| `iv1` | Developer slang for first nonce word (array pos 6) |
-| `4,"little"` | Python `int.from_bytes` notation: 4 bytes, little-endian |
-| `key` | 32-byte secret; first 32 chars of `"Simulator Interface Packet GT7 ver 0.0"` |
-| `nonce` | 64-bit unique message number; array positions 6–7 |
-| `decrypt` | Same XOR as encrypt, applied to ciphertext |
-| `plaintext` | The decrypted message data |
-| `b"x"[:32]` | Python bytes literal sliced to 32 bytes (the key) |
-| `^` | Bitwise XOR (used in `seed ^ mask`) |
+| Term          | Definition                                                                   |
+| ------------- | ---------------------------------------------------------------------------- |
+| `0x47375330`  | Magic value (ASCII `"G7S0"` LE); confirms successful decrypt                 |
+| `296`         | Byte size of heartbeat A packet                                              |
+| `316`         | Byte size of heartbeat B packet                                              |
+| `344`         | Byte size of heartbeat ~ packet                                              |
+| `[0x40:0x44]` | Byte offset in GT7 datagram where the 4-byte seed lives                      |
+| `little`      | Little-endian byte order; spec function `littleendian(b₀..b₃)`               |
+| `mask`        | GT7-internal XOR value applied to seed; not in Salsa20 spec                  |
+| `0xDEADBEAF`  | Mask for heartbeat A                                                         |
+| `0xDEADBEEF`  | Mask for heartbeat B (and C, unconfirmed)                                    |
+| `0x55FABB4F`  | Mask for heartbeat ~                                                         |
+| `iv2`         | Developer slang for second nonce word (array pos 7)                          |
+| `iv1`         | Developer slang for first nonce word (array pos 6)                           |
+| `4,"little"`  | Python `int.from_bytes` notation: 4 bytes, little-endian                     |
+| `key`         | 32-byte secret; first 32 chars of `"Simulator Interface Packet GT7 ver 0.0"` |
+| `nonce`       | 64-bit unique message number; array positions 6–7                            |
+| `decrypt`     | Same XOR as encrypt, applied to ciphertext                                   |
+| `plaintext`   | The decrypted message data                                                   |
+| `b"x"[:32]`   | Python bytes literal sliced to 32 bytes (the key)                            |
+| `^`           | Bitwise XOR (used in `seed ^ mask`)                                          |
 
 Salsa20 parameters cross-referenced against the [Salsa20 Specification (2005)](https://cr.yp.to/snuffle/spec.pdf) by Daniel J. Bernstein. GT7 packet details sourced from the tireless reverse engineering of [Nenkai](https://github.com/Nenkai), [Bornhall](https://github.com/Bornhall), [MacManley](https://github.com/MacManley), and the GT Planet community.
 
@@ -57,6 +55,15 @@ Ask Brave says, "Good luck with the script. You've got a solid reference now."
 
 ## Salsa20 Spec as it relates to Simulator Interface Packet GT7 ver 0.0
 
+| KEYWORD   | DEFINITIONS                                                                                                                                                                                                                                    |
+| :-------- |:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| key       | A 256-bit (32-byte) secret shared by sender and receiver. Placed into positions 1–4 and 10–13 of the 16-word state array. Used directly in every block; no key expansion or preprocessing.                                                     |
+| nonce     | A 64-bit "unique message number" (192 bits in XSalsa20). Placed into positions 6–7. Must be unique per message under a given key. In XSalsa20, the first 128 bits feed HSalsa20; the last 64 bits feed Salsa20's counter-mode nonce.           |
+| decrypt   | Not defined as a separate operation. The spec states: *"Or m can be a ciphertext message, in which case Salsa20k(v) ⊕ m is the original plaintext message."* Decryption is the identical xor, just applied to ciphertext instead of plaintext. |
+| plaintext | The message *m* before encryption. Encrypted by xor'ing each byte with the corresponding byte of the keystream: `c[i] = m[i] ⊕ Salsa20k(v, ⌊i/64⌋)[i mod 64]`.                                                                                 |
+| little    | The `littleendian` function: converts a 4-byte sequence `(b₀, b₁, b₂, b₃)` to a 32-bit word `b₀ + 2⁸·b₁ + 2¹⁶·b₂ + 2²⁴·b₃`. Invertible. Used to interpret all byte sequences as words throughout the hash function.                            |
+
+
 | KEYWORD | DEFINITIONS |
 |:--|:--|
 | key | A 256-bit (32-byte) secret shared by sender and receiver. Placed into positions 1–4 and 10–13 of the 16-word state array. Used directly in every block; no key expansion or preprocessing. |
@@ -77,42 +84,44 @@ The canonical Salsa20 spec is Bernstein's original PDF:
 
 [Salsa20 Specification (2005)](https://cr.yp.to/snuffle/spec.pdf)
 
-|  |  |
-|:---|:---|
-| mask |  |
-| 0xDEADBEAF | It's a well-known **sentinel/debug value** in programming (the "dead beef" pattern) — often used to mark uninitialized memory or as a canary |
-| 0xDEADBEEF | It's the classic **debug sentinel value** in computing (ASCII `"0S7G"` little-endian, or `"0S7G"`… actually bytes `0xEF 0xBE 0xAD 0xDE` → ASCII `"ê¾­Þ"` — not meaningful ASCII). It's used to mark uninitialized or freed memory, as a canary, or as a placeholder. No cryptographic role in Salsa20. |
-| 0x55FABB4F | Little-endian byte decode: `0x4F 0xBB 0xFA 0x55` — not meaningful ASCII. No role in Salsa20. |
-| iv2 | Salsa20 spec uses the terms **"nonce"** (64-bit unique message number) and **"block counter"** (64-bit) to describe the per-message/per-block inputs. Salsa20 spec never uses "IV" or "iv2" as a label. |
-| iv1 | Salsa20 spec never uses "IV" terminology. The relevant inputs are called the **nonce** (64-bit) and the **block counter** (64-bit). |
-| 4 | Salsa20 spec uses "4" throughout, but always as a count or dimension: "4 key words", "4 × 4 array", "4 parallel 32-bit operations", "4 rounds", etc. |
 
 
-|Array words | Value  |
-|:---|:---|
-| secret key | Simulator Interface Packet GT7 ver 0.0 |
-| block-counter words | 0 |
+|            |                                                                                                                                                                                                                                                                                                        |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| mask       |                                                                                                                                                                                                                                                                                                        |
+| 0xDEADBEAF | It's a well-known **sentinel/debug value** in programming (the "dead beef" pattern) — often used to mark uninitialized memory or as a canary                                                                                                                                                           |
+| 0xDEADBEEF | It's the classic **debug sentinel value** in computing (ASCII `"0S7G"` little-endian, or `"0S7G"`… actually bytes `0xEF 0xBE 0xAD 0xDE` → ASCII `"ê¾­Þ"` — not meaningful ASCII). It's used to mark uninitialized or freed memory, as a canary, or as a placeholder. No cryptographic role in Salsa20.  |
+| 0x55FABB4F | Little-endian byte decode: `0x4F 0xBB 0xFA 0x55` — not meaningful ASCII. No role in Salsa20.                                                                                                                                                                                                           |
+| iv2        | Salsa20 spec uses the terms **"nonce"** (64-bit unique message number) and **"block counter"** (64-bit) to describe the per-message/per-block inputs. Salsa20 spec never uses "IV" or "iv2" as a label.                                                                                                |
+| iv1        | Salsa20 spec never uses "IV" terminology. The relevant inputs are called the **nonce** (64-bit) and the **block counter** (64-bit).                                                                                                                                                                    |
+| 4          | Salsa20 spec uses "4" throughout, but always as a count or dimension: "4 key words", "4 × 4 array", "4 parallel 32-bit operations", "4 rounds", etc.                                                                                                                                                   |
+|
+
+| Array words         | Value                                  |
+| ------------------- | -------------------------------------- |
+| secret key          | Simulator Interface Packet GT7 ver 0.0 |
+| block-counter words | 0                                      |
 
 [Salsa20 Specification (2005)](https://cr.yp.to/snuffle/spec.pdf)
 
 *NOTE: The terms 'seed' and 'mask' are slang and not part of the [Salsa20 Specification (2005)](https://cr.yp.to/snuffle/spec.pdf).*
 
-|Heartbeat | mask | bytes |
-|:---|:---|:---|
-| A | 0xDEADBEAF | 296 |
-| B | 0xDEADBEEF | 316 |
-| ~ | 0x55FABB4F | 344 |
-| C | 0xDEADBEEF | 368* |
+| Heartbeat | mask       | bytes |
+| --------- | ---------- | ----- |
+| A         | 0xDEADBEAF | 296   |
+| B         | 0xDEADBEEF | 316   |
+| ~         | 0x55FABB4F | 344   |
+| C         | 0xDEADBEEF | 368*  |
 
 *Heartbeat and packet sizes in bytes.*
 
 *Your first three rows are **confirmed correct** by multiple independent sources (MacManley, Nenkai/PDTools, Bornhall, ApexNorth, those-who-run/salsa):
 
-| Heartbeat | Mask | Bytes |
-|:---|:---|:---|
-| A | 0xDEADBEAF | 296 |
-| B | 0xDEADBEEF | 316 |
-| ~ | 0x55FABB4F | 344 |
+| Heartbeat | Mask       | Bytes |
+| --------- | ---------- | ----- |
+| A         | 0xDEADBEAF | 296   |
+| B         | 0xDEADBEEF | 316   |
+| ~         | 0x55FABB4F | 344   |
 
 The **C row is the problem**. The C packet is confirmed to exist (added around Update ~1.68, per MacManley/gt7-udp), but **no source I can find documents its mask or byte size**. Your table claims `0xDEADBEEF / 368` — that's unverified. It's also suspicious that C shares B's mask exactly; the pattern so far has been one unique mask per type.
 
@@ -140,21 +149,21 @@ Here's the consolidated reference, cross-checked across MacManley, Nenkai/PDTool
 
 ### Packet types
 
-| Type | Bytes | Mask | Status |
-|:---|:---|:---|:---|
-| A | 296 (0x128) | `0xDEADBEAF` | Fully confirmed (all sources) |
-| B | 316 (0x13C) | `0xDEADBEEF` | Fully confirmed (all sources) |
-| ~ | 344 (0x158) | `0x55FABB4F` | Fully confirmed (all sources) |
-| C | 368 (0x170) | **undocumented** | Size confirmed (ThrottleGeist, AziCool); mask not stated in any public source |
+| Type | Bytes       | Mask             | Status                                                                        |
+| ---- | ----------- | ---------------- | ----------------------------------------------------------------------------- |
+| A    | 296 (0x128) | `0xDEADBEAF`     | Fully confirmed (all sources)                                                 |
+| B    | 316 (0x13C) | `0xDEADBEEF`     | Fully confirmed (all sources)                                                 |
+| ~    | 344 (0x158) | `0x55FABB4F`     | Fully confirmed (all sources)                                                 |
+| C    | 368 (0x170) | **undocumented** | Size confirmed (ThrottleGeist, AziCool); mask not stated in any public source |
 
 ### Your table, corrected
 
-| Heartbeat | Mask | Bytes |
-|:---|:---|:---|
-| A | 0xDEADBEAF | 296 |
-| B | 0xDEADBEEF | 316 |
-| ~ | 0x55FABB4F | 344 |
-| C | **unknown** | 368 |
+| Heartbeat | Mask        | Bytes |
+| --------- | ----------- | ----- |
+| A         | 0xDEADBEAF  | 296   |
+| B         | 0xDEADBEEF  | 316   |
+| ~         | 0x55FABB4F  | 344   |
+| C         | **unknown** | 368   |
 
 The C size (368) is solid. The C mask is the one gap. Every source that documents masks stops at ~. If you have a live C capture, you can brute-force it the same way Nenkai found B's mask (Issue #14: "After some short bruteforce... 0xDEADBEAF is replaced by 0xDEADBEEF") — try each candidate mask, decrypt, check for magic `0x47375330`.
 
@@ -167,10 +176,6 @@ The C size (368) is solid. The C mask is the one gap. Every source that document
 There is no single doc that covers all four types with full field offsets. MacManley is closest for A/B/~; C's field layout appears to be documented only in the relay/telemetry repos (ThrottleGeist, AziCool) as "extended stream" without a full offset table.
 
 ----------------------------
-
-
-
-
 
 OSKAK78 says, "each developer does it a bit different
 iv1 = int.from_bytes(SIP_raw[0x40:0x44], "little")
@@ -189,63 +194,30 @@ Mapping it:
 The spec only says "positions 6–7 are a 64-bit nonce, interpreted in little-endian form." *Where* those bytes come from in a GT7 packet, *what* `mask` is, and *whether* it's 4 or 8 bytes of seed — that's all developer-specific. Bernstein never specifies packet layout.
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Unknown Below
 ------------------------------------------------------
 
-| position | word | value | source |
-|:---|:---|:---|:---|
-| 0 | constant word | 0x61707865 | doc |
-| 1 | key word | 0x756D6953 | key[0:4] "Simu" |
-| 2 | key word | 0x6F74616C | key[4:8] "lato" |
-| 3 | key word | 0x6E492072 | key[8:12] "r In" |
-| 4 | constant word | 0x3320646E | doc |
-| 5 | nonce word | le32(seed ^ mask) | packet[0x40:0x44] |
-| 6 | nonce word | le32(seed) | packet[0x40:0x44] |
-| 7 | block-counter word | 0 | fixed |
-| 8 | block-counter word | 0 | fixed |
-| 9 | constant word | 0x79622D32 | doc |
-| 10 | key word | 0x66726574 | key[12:16] "terf" |
-| 11 | key word | 0x20656361 | key[16:20] "ace " |
-| 12 | key word | 0x6B636150 | key[20:24] "Pack" |
-| 13 | key word | 0x47207465 | key[24:28] "et G" |
-| 14 | key word | 0x76203754 | key[28:32] "T7 v" |
-| 15 | constant word | 0x6B206574 | doc |
+
+
+| position | word               | value             | source            |
+| -------- | ------------------ | ----------------- | ----------------- |
+| 0        | constant word      | 0x61707865        | doc               |
+| 1        | key word           | 0x756D6953        | key[0:4] "Simu"   |
+| 2        | key word           | 0x6F74616C        | key[4:8] "lato"   |
+| 3        | key word           | 0x6E492072        | key[8:12] "r In"  |
+| 4        | constant word      | 0x3320646E        | doc               |
+| 5        | nonce word         | le32(seed ^ mask) | packet[0x40:0x44] |
+| 6        | nonce word         | le32(seed)        | packet[0x40:0x44] |
+| 7        | block-counter word | 0                 | fixed             |
+| 8        | block-counter word | 0                 | fixed             |
+| 9        | constant word      | 0x79622D32        | doc               |
+| 10       | key word           | 0x66726574        | key[12:16] "terf" |
+| 11       | key word           | 0x20656361        | key[16:20] "ace " |
+| 12       | key word           | 0x6B636150        | key[20:24] "Pack" |
+| 13       | key word           | 0x47207465        | key[24:28] "et G" |
+| 14       | key word           | 0x76203754        | key[28:32] "T7 v" |
+| 15       | constant word      | 0x6B206574        | doc               |
+
 
 
 *The "value" column is just the 32-bit little-endian integer representation of the bytes that go into that position of the Salsa20 state array. It's not AI nonsense — it's the standard way to show the 16×32-bit words that initialize the cipher.*
@@ -253,12 +225,13 @@ The spec only says "positions 6–7 are a 64-bit nonce, interpreted in little-en
 Here's what each type means:
 
 **Constant words** (positions 0, 4, 9, 15): These are the Salsa20 "nothing-up-my-sleeve" constants, the ASCII string **"expand 32-byte k"** split into four 32-bit little-endian words:
-| Position | Hex | ASCII |
-|:---|:---|:---|
-| 0 | `0x61707865` | "expa" |
-| 4 | `0x3320646e` | "nd 3" |
-| 9 | `0x79622d32` | "2-by" |
-| 15 | `0x6b206574` | "te k" |
+
+| Position | Hex          | ASCII  |
+| -------- | ------------ | ------ |
+| 0        | `0x61707865` | "expa" |
+| 4        | `0x3320646e` | "nd 3" |
+| 9        | `0x79622d32` | "2-by" |
+| 15       | `0x6b206574` | "te k" |
 
 **Key words** (positions 1–3, 10–14): The 32-byte GT7 key, which is the first 32 bytes of the string **"Simulator Interface Packet GT7 ver 0.0"**, read as 32-bit little-endian integers. The ASCII annotations in the "source" column confirm this:
 - `0x756D6953` = "Simu"
@@ -281,24 +254,26 @@ This layout matches the standard Salsa20-256 state initialization exactly (4 con
 
 Every value in column 3 is just 4 bytes read as a little-endian uint32. Flipping the byte order gives you the ASCII:
 
-| Pos | Hex | Bytes (LE) | ASCII |
-|:---|:---|:---|:---|
-| 0 | `0x61707865` | `65 78 70 61` | `expa` |
-| 1 | `0x756D6953` | `53 69 6D 75` | `Simu` |
-| 2 | `0x6F74616C` | `6C 61 74 6F` | `lato` |
-| 3 | `0x6E492072` | `72 20 49 6E` | `r In` |
-| 4 | `0x3320646E` | `6E 64 20 33` | `nd 3` |
-| 5 | `le32(seed ^ mask)` | *(runtime)* | *(runtime)* |
-| 6 | `le32(seed)` | *(runtime)* | *(runtime)* |
-| 7 | `0x00000000` | `00 00 00 00` | NUL |
-| 8 | `0x00000000` | `00 00 00 00` | NUL |
-| 9 | `0x79622D32` | `32 2D 62 79` | `2-by` |
-| 10 | `0x66726574` | `74 65 72 66` | `terf` |
-| 11 | `0x20656361` | `61 63 65 20` | `ace ` |
-| 12 | `0x6B636150` | `50 61 63 6B` | `Pack` |
-| 13 | `0x47207465` | `65 74 20 47` | `et G` |
-| 14 | `0x76203754` | `54 37 20 76` | `T7 v` |
-| 15 | `0x6B206574` | `74 65 20 6B` | `te k` |
+
+| Pos | Hex                 | Bytes (LE)    | ASCII       |
+| --- | ------------------- | ------------- | ----------- |
+| 0   | `0x61707865`        | `65 78 70 61` | `expa`      |
+| 1   | `0x756D6953`        | `53 69 6D 75` | `Simu`      |
+| 2   | `0x6F74616C`        | `6C 61 74 6F` | `lato`      |
+| 3   | `0x6E492072`        | `72 20 49 6E` | `r In`      |
+| 4   | `0x3320646E`        | `6E 64 20 33` | `nd 3`      |
+| 5   | `le32(seed ^ mask)` | *(runtime)*   | *(runtime)* |
+| 6   | `le32(seed)`        | *(runtime)*   | *(runtime)* |
+| 7   | `0x00000000`        | `00 00 00 00` | NUL         |
+| 8   | `0x00000000`        | `00 00 00 00` | NUL         |
+| 9   | `0x79622D32`        | `32 2D 62 79` | `2-by`      |
+| 10  | `0x66726574`        | `74 65 72 66` | `terf`      |
+| 11  | `0x20656361`        | `61 63 65 20` | `ace `      |
+| 12  | `0x6B636150`        | `50 61 63 6B` | `Pack`      |
+| 13  | `0x47207465`        | `65 74 20 47` | `et G`      |
+| 14  | `0x76203754`        | `54 37 20 76` | `T7 v`      |
+| 15  | `0x6B206574`        | `74 65 20 6B` | `te k`      |
+|
 
 So the two "readable" groups are:
 
@@ -338,38 +313,27 @@ No transformation is applied at this stage — it's a raw slice of the key place
 -----------------------------------------
 
 
-
-
-
-
-
-
-| | Key | Mask | Seed Offset | Nonce Lo | Nonce Hi | Counter | Rounds | Size |
-|---|---|---|---|---|---|---|---|---|
-| A | Simulator Interface Packet GT7 ver 0.0 | 0xDEADBEAF | 0x40 | le32(seed^mask) | le32(seed) | 0 | 20 | 296 |
-| B | Simulator Interface Packet GT7 ver 0.0 | 0xDEADBEEF | 0x40 | le32(seed^mask) | le32(seed) | 0 | 20 | 316 |
-| ~ | Simulator Interface Packet GT7 ver 0.0 | 0x55FABB4F | 0x40 | le32(seed^mask) | le32(seed) | 0 | 20 | 344 |
-| C | Simulator Interface Packet GT7 ver 0.0 | 0xDEADBEEF | 0x40 | le32(seed^mask) | le32(seed) | 0 | 20 | 368 |
+| HB | Key                                    | Mask       | Seed Offset | Nonce Lo        | Nonce Hi   | Counter | Rounds | Size |
+| -- | -------------------------------------- | ---------- | ----------- | --------------- | ---------- | ------- | ------ | ---- |
+| A  | Simulator Interface Packet GT7 ver 0.0 | 0xDEADBEAF | 0x40        | le32(seed^mask) | le32(seed) | 0       | 20     | 296  |
+| B  | Simulator Interface Packet GT7 ver 0.0 | 0xDEADBEEF | 0x40        | le32(seed^mask) | le32(seed) | 0       | 20     | 316  |
+| ~  | Simulator Interface Packet GT7 ver 0.0 | 0x55FABB4F | 0x40        | le32(seed^mask) | le32(seed) | 0       | 20     | 344  |
+| C  | Simulator Interface Packet GT7 ver 0.0 | 0xDEADBEEF | 0x40        | le32(seed^mask) | le32(seed) | 0       | 20     | 368  |
 
 seed = u32le(datagram[seed_offset : seed_offset+4])
 nonce = nonce_lo + nonce_hi (8 bytes total)
 magic check after decrypt: u32le(plaintext[0:4]) == 0x47375330
 
-
-
-
-| Variable | Type | Value / Source |
-|---|---|---|
-| `key` | 32 B | `Simulator Interface Packet GT7 ver 0.0` |
-| `seed` | u32 | `u32le(datagram[0x40:0x44])` |
-| `mask` | u32 | per-packet constant |
-| `iv2` | u32 | `seed ^ mask` |
-| `nonce` | 8 B | `le32(iv2) ‖ le32(seed)` |
-| `counter` | 8 B | `0` |
-| `rounds` | int | `20` |
-| `ciphertext` | N B | received datagram |
-
-
+| Variable     | Type | Value / Source                           |
+| :------------|:---- |:---------------------------------------- |
+| `key`        | 32 B | `Simulator Interface Packet GT7 ver 0.0` |
+| `seed`       | u32  | `u32le(datagram[0x40:0x44])`             |
+| `mask`       | u32  | per-packet constant                      |
+| `iv2`        | u32  | `seed ^ mask`                            |
+| `nonce`      | 8 B  | `le32(iv2) ‖ le32(seed)`                 |
+| `counter`    | 8 B  | `0`                                      |
+| `rounds`     | int  | `20`                                     |
+| `ciphertext` | N B  | received datagram                        |
 
 
 | | Key | Mask | Nonce | Counter |
@@ -382,18 +346,16 @@ magic check after decrypt: u32le(plaintext[0:4]) == 0x47375330
 
 ## Salsa20 LUT — GT7 Telemetry
 
-
-
-| | **A** | **B** | **~** | **C** |
-|---|---|---|---|---|
-| **Key** (32 B) | `Simulator Interface Packet GT7 ver 0.0` | same | same | same |
-| **Mask** (u32) | `0xDEADBEAF` | `0xDEADBEEF` | `0x55FABB4F` | `0xDEADBEEF` |
-| **Nonce** (8 B) | `le32(seed^mask) ‖ le32(seed)` | same | same | same |
-| **Counter** (8 B) | `0` | `0` | `0` | `0` |
-| **Rounds** | 20 | 20 | 20 | 20 |
-| **Block size** | 64 B | 64 B | 64 B | 64 B |
-| **Packet size** | 296 B | 316 B | 344 B | 368 B |
-| **Blocks** | 5 (last 16 B) | 5 (last 36 B) | 6 (last 8 B) | 6 (last 32 B) |
+|                   | **A**                                    | **B**         | **~**        | **C**         |
+| ----------------- | :--------------------------------------- |:------------- |:------------ |:------------- |
+| **Key** (32 B)    | `Simulator Interface Packet GT7 ver 0.0` | same          | same         | same          |
+| **Mask** (u32)    | `0xDEADBEAF`                             | `0xDEADBEEF`  | `0x55FABB4F` | `0xDEADBEEF`  |
+| **Nonce** (8 B)   | `le32(seed^mask) ‖ le32(seed)`           | same          | same         | same          |
+| **Counter** (8 B) | `0`                                      | `0`           | `0`          | `0`           |
+| **Rounds**        | 20                                       | 20            | 20           | 20            |
+| **Block size**    | 64 B                                     | 64 B          | 64 B         | 64 B          |
+| **Packet size**   | 296 B                                    | 316 B         | 344 B        | 368 B         |
+| **Blocks**        | 5 (last 16 B)                            | 5 (last 36 B) | 6 (last 8 B) | 6 (last 32 B) |
 
 Where `seed = u32le(datagram[0x40:0x44])`.
 
@@ -413,12 +375,14 @@ You're right — no single clean reference page exists. Here it is, consolidated
 
 **Post-decrypt magic**: `0x47375330` (LE) at offset 0
 
-| Packet | Heartbeat | Size | IV XOR Mask | Added over previous |
-|--------|-----------|------|-------------|---------------------|
-| **A** | `A` | 296 B (`0x128`) | `0xDEADBEAF` | — |
-| **B** | `B` | 316 B (`0x13C`) | `0xDEADBEEF` | + wheel rotation, steering angular velocity, sway, heave, surge |
-| **~** | `~` | 344 B (`0x158`) | `0x55FABB4F` | + surface type, filtered throttle/brake, energy recovery, misc |
-| **C** | `C` | 368 B (`0x170`) | `0xDEADBEEF` | + front/rear aero downforce, trans oil temp, car category, wheelbase, wheel steering angles, current lap ms |
+
+| Packet | Heartbeat | Size            | IV XOR Mask  | Added over previous                                                                                         |
+| ------ | --------- | --------------- | ------------ | :---------------------------------------------------------------------------------------------------------- |
+| **A**  | `A`       | 296 B (`0x128`) | `0xDEADBEAF` | —                                                                                                           |
+| **B**  | `B`       | 316 B (`0x13C`) | `0xDEADBEEF` | + wheel rotation, steering angular velocity, sway, heave, surge                                             |
+| **~**  | `~`       | 344 B (`0x158`) | `0x55FABB4F` | + surface type, filtered throttle/brake, energy recovery, misc                                              |
+| **C**  | `C`       | 368 B (`0x170`) | `0xDEADBEEF` | + front/rear aero downforce, trans oil temp, car category, wheelbase, wheel steering angles, current lap ms |
+|
 
 **Ports**: heartbeat → PS5 UDP **33739**, telemetry ← PS5 UDP **33740**
 
@@ -455,9 +419,10 @@ Here's the full Salsa20 reference for GT7, consolidated from all sources:
 
 The 8-byte Salsa20 nonce is assembled from two 32-bit LE words:
 
-| Word | Value | Source |
-|------|-------|--------|
-| `nonce[0]` (low 4 bytes) | `iv2 = iv1 ^ mask` | computed |
+
+| Word                      | Value              | Source             |
+| :------------------------ |: ----------------- |:------------------ |
+| `nonce[0]` (low 4 bytes)  | `iv2 = iv1 ^ mask` | computed           |
 | `nonce[1]` (high 4 bytes) | `iv1` (the "seed") | read from datagram |
 
 Where:
@@ -478,24 +443,26 @@ Always **zero**. All implementations (`x/crypto/salsa20`, `pycryptodome`, PDTool
 ### Salsa20 state layout (4×4 matrix of 32-bit LE words)
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│ 0x61707865 │  key[0]   │  key[1]   │  key[2]   │       │
-│  key[3]   │ 0x3320646e │ nonce[0]  │ nonce[1]  │       │
-│  ctr[0]=0 │  ctr[1]=0  │ 0x79622d32│  key[4]   │       │
-│  key[5]   │  key[6]    │  key[7]   │ 0x6b206574│       │
-└─────────────────────────────────────────────────────────┘
+┌───────────────────────────────────────────────────┐
+│ 0x61707865 │  key[0]    │  key[1]    │  key[2]    │
+│  key[3]    │ 0x3320646e │ nonce[0]   │ nonce[1]   │
+│  ctr[0]=0  │  ctr[1]=0  │ 0x79622d32 │  key[4]    │
+│  key[5]    │  key[6]    │  key[7]    │ 0x6b206574 │
+└───────────────────────────────────────────────────┘
 ```
 
 Constants are the ASCII string `"expand 32-byte k"` split into four LE u32s.
 
 ### Per-packet mask
 
-| Packet | Size | Mask |
-|--------|------|------|
-| A | 296 | `0xDEADBEAF` |
-| B | 316 | `0xDEADBEEF` |
-| ~ | 344 | `0x55FABB4F` |
-| C | 368 | `0xDEADBEEF` (same as B) |
+
+
+| Packet | Size | Mask                     |
+| ------ | ---- | ------------------------ |
+| A      | 296  | `0xDEADBEAF`             |
+| B      | 316  | `0xDEADBEEF`             |
+| ~      | 344  | `0x55FABB4F`             |
+| C      | 368  | `0xDEADBEEF` (same as B) |
 
 ### Decryption procedure
 
@@ -526,12 +493,12 @@ Constants are the ASCII string `"expand 32-byte k"` split into four LE u32s.
 
 ## Python
 
-|  |   |
-|:---|:---|
-| b"x"[:32] | 
-| b | https://docs.python.org/3/reference/lexical_analysis.html#string-prefixes |
-| [:32] | https://docs.python.org/3/reference/expressions.html#slicings |
-| ^ | https://docs.python.org/3/reference/expressions.html#binary-bitwise-operations |
+|           |                                                                                |
+| --------- | ------------------------------------------------------------------------------ |
+| b"x"[:32] |                                                                                |
+| b         | https://docs.python.org/3/reference/lexical_analysis.html#string-prefixes      |
+| [:32]     | https://docs.python.org/3/reference/expressions.html#slicings                  |
+| ^         | https://docs.python.org/3/reference/expressions.html#binary-bitwise-operations |
 
 **`b"x"[:32]`** does not appear anywhere in the [Salsa20 specification](https://cr.yp.to/snuffle/spec.pdf).
 
@@ -554,15 +521,18 @@ The paper uses **superscript** notation for exponents (e.g. 2³², 2⁶⁴, 2¹�
 
 Companion documents from the same author:
 
-| Doc | Link | What it covers |
-|-----|------|---------------|
-| **Salsa20 family** (2007) | [cr.yp.to/snuffle/salsafamily-20071225.pdf](https://cr.yp.to/snuffle/salsafamily-20071225.pdf) | Full cipher description, security analysis, 8/12/20-round variants |
-| **Salsa20 design** | [cr.yp.to/snuffle/design.pdf](https://cr.yp.to/snuffle/design.pdf) | Design rationale, why the structure works |
-| **Salsa20/8 and /12** | [cr.yp.to/snuffle/812.pdf](https://cr.yp.to/snuffle/812.pdf) | Reduced-round variants |
-| **XSalsa20** (nonce extension) | [cr.yp.to/snuffle/xsalsa-20081128.pdf](https://cr.yp.to/snuffle/xsalsa-20081128.pdf) | How to extend the 8-byte nonce to 24 bytes via HSalsa20 |
+| Doc                            | Link                                                                                           | What it covers                                                     |
+| ------------------------------ | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| **Salsa20 family** (2007)      | [cr.yp.to/snuffle/salsafamily-20071225.pdf](https://cr.yp.to/snuffle/salsafamily-20071225.pdf) | Full cipher description, security analysis, 8/12/20-round variants |
+| **Salsa20 design**             | [cr.yp.to/snuffle/design.pdf](https://cr.yp.to/snuffle/design.pdf)                             | Design rationale, why the structure works                          |
+| **Salsa20/8 and /12**          | [cr.yp.to/snuffle/812.pdf](https://cr.yp.to/snuffle/812.pdf)                                   | Reduced-round variants                                             |
+| **XSalsa20** (nonce extension) | [cr.yp.to/snuffle/xsalsa-20081128.pdf](https://cr.yp.to/snuffle/xsalsa-20081128.pdf)           | How to extend the 8-byte nonce to 24 bytes via HSalsa20            |
+|
 
 All at `cr.yp.to` (Bernstein's site). The 2005 `spec.pdf` is the one you want for understanding the state layout and how `key`, `nonce`, map into the 16-keyword matrix.
 ------
+
+
 **In Bernstein's documents:**
 
 `little`
@@ -702,13 +672,14 @@ https://cr.yp.to/snuffle/spec.pdf
 
 **Notable:** This is the only doc that gives "little" a **formal definition** as a named function with inputs/outputs/examples, rather than a prose mention. It's the one doc from your list that could actually be called a **specification** — the others are design papers or proposals.
 
-| Term | 2005 spec | 2005 design | 2006 Salsa20/8 | 2007 family | 2008 XSalsa20 |
-|------|:-:|:-:|:-:|:-:|:-:|
-| key | ✓ | ✓ | ✓ | ✓ | ✓ |
-| nonce | ✓ | ✓ | ✓ | ✓ | ✓ |
-| plaintext | ✓ | ✓ | ✓ | ✓ | — |
-| decrypt | — | ✓ | ✓ | ✓ | — |
-| little | ✓ (function) | — | — | ✓ (prose) | ✓ (prose) |
+
+| Term      | 2005 spec    | 2005 design | 2006 Salsa20/8 | 2007 family | 2008 XSalsa20 |
+| --------- | ------------ | ----------- | -------------- | ----------- | ------------- |
+| key       | ✓            | ✓           | ✓              | ✓           | ✓             |
+| nonce     | ✓            | ✓           | ✓              | ✓           | ✓             |
+| plaintext | ✓            | ✓           | ✓              | ✓           | —             |
+| decrypt   | —            | ✓           | ✓              | ✓           | —             |
+| little    | ✓ (function) | —           | —              | ✓ (prose)   | ✓ (prose)     |
 
 
 -------------------------------------------
@@ -852,22 +823,12 @@ The Salsa20 family of stream ciphers https://cr.yp.to/snuffle/salsafamily-200712
 - "Incorporating the **plaintext** into the stream takes time for every block"
 
 **"plain text"** (two words) — No. The document always uses the single-word form **"plaintext"**.
-
-The Salsa20 family of stream ciphers https://cr.yp.to/snuffle/salsafamily-20071225.pdf
-
---------------------------
-
-
+Only the single-word form **"plaintext"** is used, consistently, throughout.
 **"plain text"** (two words) — No. It does not appear anywhere in the document.
 
-Only the single-word form **"plaintext"** is used, consistently, throughout.
-
-The Salsa20 family of stream ciphers https://cr.yp.to/snuffle/salsafamily-20071225.pdf
-
----------------------------
 The Salsa20 family of stream ciphers https://cr.yp.to/snuffle/salsafamily-20071225.pdf
 
 
-# END OF The Salsa20 family of stream ciphers
+# END
 
 
