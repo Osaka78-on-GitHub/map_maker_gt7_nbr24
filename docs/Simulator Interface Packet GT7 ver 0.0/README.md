@@ -1,4 +1,4 @@
-# WIP WARNING NONE OF THIS IS VALIDATED YET
+# WIP WARNING: NONE OF THIS IS 100% VALIDATED BY OSAKA78 YET
 # Salsa20 and Simulator Interface Packet GT7 ver 0.0
 
 
@@ -25,6 +25,8 @@
 | `b"x"[:32]` | Python bytes literal sliced to 32 bytes (the key) |
 | `^` | Bitwise XOR (used in `seed ^ mask`) |
 
+Salsa20 parameters cross-referenced against the [Salsa20 Specification (2005)](https://cr.yp.to/snuffle/spec.pdf) by Daniel J. Bernstein. GT7 packet details sourced from the tireless reverse engineering of [Nenkai](https://github.com/Nenkai), [Bornhall](https://github.com/Bornhall), [MacManley](https://github.com/MacManley), and the GT Planet community.
+
 This information is compiled by Osaka78 and Ask Brave.
 
 Ask Brave says, "Good luck with the script. You've got a solid reference now."
@@ -32,87 +34,26 @@ Ask Brave says, "Good luck with the script. You've got a solid reference now."
 *Osaka asked Brave if he wanted to say hi to the devs of GT7 Telemetry Apps*
 
 ### ASK BRAVE said
-Here's a line you can drop under the table:
+> Here's a line you can drop under the table:
 
 ```markdown
 > Salsa20 parameters cross-referenced against the [Salsa20 Specification (2005)](https://cr.yp.to/snuffle/spec.pdf) by Daniel J. Bernstein. GT7 packet details sourced from the tireless reverse engineering of [Nenkai](https://github.com/Nenkai), [Bornhall](https://github.com/Bornhall), [MacManley](https://github.com/MacManley), and the GT Planet community.
 ```
 
-Or if you want it shorter:
+> Or if you want it shorter:
 
 ```markdown
 > Salsa20 per [Bernstein (2005)](https://cr.yp.to/snuffle/spec.pdf). GT7 packet details: thanks to Nenkai, Bornhall, MacManley, and the GT Planet crew for doing the hard part.
 ```
 
-Either way — hi Nenkai, hi Bornhall. The fact that you can now write a working script without spelunking through a dozen half-finished repos and forum posts is entirely down to them.
+> Either way — hi Nenkai, hi Bornhall. The fact that you can now write a working script without spelunking through a dozen half-finished repos and forum posts is entirely down to them.
 
 ---------------------------------------------
 
-0x47375330
-
-296
-
-316
-
-344
-
-[0x40:0x44]
-
-little
-
-mask
-
-0xDEADBEAF
-
-0xDEADBEEF
-
-0x55FABB4F
-
-iv2
-
-iv1
-
-4,"little"
-
-
-key
-
-nonce
-
-decrypt
-
-plaintext
-
-
-b"x"[:32]
-
-^
-
-
-## Keywords specific to Simulator Interface Packet GT7 ver 0.0
-
-------------------------------------
-
-|  |  |
-|:--|:--|
-| 0x47375330 | AKA magic key |
-
-
-
--------------------------------
-
-|bytes  |  |
-|:--|:--|
-| 296 |     |
-| 316 |  |
-| 344 |  |
-
-----------------------------------
 
 
 
 
-# GT7 ABOVE
 
 ## Salsa20 Spec as it relates to Simulator Interface Packet GT7 ver 0.0
 
@@ -284,7 +225,7 @@ The spec only says "positions 6–7 are a 64-bit nonce, interpreted in little-en
 
 
 
-# UNKnown Below
+## Unknown Below
 ------------------------------------------------------
 
 | position | word | value | source |
@@ -809,8 +750,8 @@ The Salsa20 family of stream ciphers https://cr.yp.to/snuffle/salsafamily-200712
 
 
 
-# SALSA20 BELOW
-# The Salsa20 family of stream ciphers
+
+## The Salsa20 family of stream ciphers
 The Salsa20 family of stream ciphers https://cr.yp.to/snuffle/salsafamily-20071225.pdf
 
 
