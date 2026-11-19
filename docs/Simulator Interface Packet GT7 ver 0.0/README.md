@@ -1,3 +1,112 @@
+# WIP WARNING NONE OF THIS IS VALIDATED YET
+# Simulator Interface Packet GT7 ver 0.0
+
+Re-expressing the GT7 process using only terminology from Bernstein's *The Salsa family of stream ciphers*:
+
+Salsa20 is used as the **stream cipher**. A **128-bit key** is derived from the string "Simulator Interface Packet GT7 ver 0.0". For each **256-bit block**, Salsa20's **core** (20 rounds of **ARF** — add-rotate-feedback, followed by **whitening**) produces a **256-bit output**. The **keystream** is the concatenation of these outputs. The **plaintext** is obtained by XORing the **ciphertext** with the **keystream**.
+
+The first 32 bits of the **plaintext** are checked: if they equal `0x47375330`, the **decryption** is valid.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+start ask brave guess
+| position | word | value | source |
+|:---|:---|:---|:---|
+| 0 | constant word | 0x61707865 | doc |
+| 1 | key word | 0x756D6953 | key[0:4] "Simu" |
+| 2 | key word | 0x6F74616C | key[4:8] "lato" |
+| 3 | key word | 0x6E492072 | key[8:12] "r In" |
+| 4 | constant word | 0x3320646E | doc |
+| 5 | nonce word | le32(seed ^ mask) | packet[0x40:0x44] |
+| 6 | nonce word | le32(seed) | packet[0x40:0x44] |
+| 7 | block-counter word | 0 | fixed |
+| 8 | block-counter word | 0 | fixed |
+| 9 | constant word | 0x79622D32 | doc |
+| 10 | key word | 0x66726574 | key[12:16] "terf" |
+| 11 | key word | 0x20656361 | key[16:20] "ace " |
+| 12 | key word | 0x6B636150 | key[20:24] "Pack" |
+| 13 | key word | 0x47207465 | key[24:28] "et G" |
+| 14 | key word | 0x76203754 | key[28:32] "T7 v" |
+| 15 | constant word | 0x6B206574 | doc |
+
+key = b"Simulator Interface Packet GT7 ver 0.0"[:32]
+mask = 0xDEADBEAF (296), 0xDEADBEEF (316), 0x55FABB4F (344)
+rounds = 20
+
+
+
+
+end abg
+
+
+
+
+
+|Array words | Value  |
+|:---|:---|
+| secret key | Simulator Interface Packet GT7 ver 0.0 |
+| block-counter words | 0 |
+
+*The key words and block-counter words of the array.* https://cr.yp.to/snuffle/salsafamily-20071225.pdf
+
+|Packet | mask | bytes |
+|:---|:---|:---|
+| A | 0xDEADBEAF | 296 |
+| B | 0xDEADBEEF | 316 |
+| ~ | 0x55FABB4F | 344 |
+| C | 0xDEADBEEF | 368 |
+
+*Packet, masks and byte sizes.* https://cr.yp.to/snuffle/salsafamily-20071225.pdf
+
+|Stream Cipher|Value|
+|:---|:---|
+| rounds | 20 |
+
+**Values assigned to the key, block-counter, and rounds of the 20-round stream cipher.*
+https://cr.yp.to/snuffle/salsafamily-20071225.pdf
+
+|State component | Value  |
+|:---|:---|
+| seed offset | 0x40 |
+| nonce formula | le32(seed^mask) + le32(seed) |
+
+
+
+
+| | Key | Mask | Seed Offset | Nonce Lo | Nonce Hi | Counter | Rounds | Size |
+|---|---|---|---|---|---|---|---|---|
+| A | Simulator Interface Packet GT7 ver 0.0 | 0xDEADBEAF | 0x40 | le32(seed^mask) | le32(seed) | 0 | 20 | 296 |
+| B | Simulator Interface Packet GT7 ver 0.0 | 0xDEADBEEF | 0x40 | le32(seed^mask) | le32(seed) | 0 | 20 | 316 |
+| ~ | Simulator Interface Packet GT7 ver 0.0 | 0x55FABB4F | 0x40 | le32(seed^mask) | le32(seed) | 0 | 20 | 344 |
+| C | Simulator Interface Packet GT7 ver 0.0 | 0xDEADBEEF | 0x40 | le32(seed^mask) | le32(seed) | 0 | 20 | 368 |
+
+seed = u32le(datagram[seed_offset : seed_offset+4])
+nonce = nonce_lo + nonce_hi (8 bytes total)
+magic check after decrypt: u32le(plaintext[0:4]) == 0x47375330
+
+
+
+
 | Variable | Type | Value / Source |
 |---|---|---|
 | `key` | 32 B | `Simulator Interface Packet GT7 ver 0.0` |
