@@ -69,7 +69,7 @@ The canonical Salsa20 spec is Bernstein's original PDF:
 
 All at `cr.yp.to` (Bernstein's site). The 2005 `spec.pdf` is the one you want for understanding the state layout and how `key`, `nonce`, `counter` map into the 16-word matrix.
 
-Bernstein Foot notes [^1]
+Bernstein footnotes[^1]
 ----------------
 
 
@@ -696,7 +696,9 @@ The Salsa20 family of stream ciphers https://cr.yp.to/snuffle/salsafamily-200712
 
 
 ## FOOTNOTES
-[^1]: 
+
+[^1]:Bernstein Footnotes 
+
 Companion documents from the same author:
 
 | Doc | Link | What it covers |
