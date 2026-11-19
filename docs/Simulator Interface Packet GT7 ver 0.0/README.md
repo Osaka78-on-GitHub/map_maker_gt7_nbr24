@@ -1,7 +1,7 @@
 # WIP WARNING NONE OF THIS IS VALIDATED YET
-# Simulator Interface Packet GT7 ver 0.0
+# Salsa20 and Simulator Interface Packet GT7 ver 0.0
 
-# LIST KEYWORDS BELOW
+## LIST KEYWORDS
 
 0x47375330
 
@@ -45,12 +45,11 @@ b"x"[:32]
 
 ^
 
-# LIST KEYWORDS ABOVE
 
-----------------------------------
 
-# KEYWORD DEFINITIONS 
-## BY ASK BRAVE based on Bernstein
+
+## KEYWORD DEFINITIONS 
+### BY ASK BRAVE based on Bernstein
 The canonical Salsa20 spec is Bernstein's original PDF:
 
 **[Salsa20 Specification (2005)](https://cr.yp.to/snuffle/spec.pdf)** — defines the hash function, expansion function, and encryption function from the ground up. This is the one that shows you exactly how the 4×4 state matrix is laid out, how key/nonce/counter are packed in, and how the 20 rounds work.
@@ -69,7 +68,7 @@ The canonical Salsa20 spec is Bernstein's original PDF:
 
 All at `cr.yp.to` (Bernstein's site). The 2005 `spec.pdf` is the one you want for understanding the state layout and how `key`, `nonce`, `counter` map into the 16-word matrix.
 
-Bernstein footnotes[^1]
+Bernstein footnotes 
 ----------------
 
 
@@ -697,7 +696,7 @@ The Salsa20 family of stream ciphers https://cr.yp.to/snuffle/salsafamily-200712
 
 ## FOOTNOTES
 
-[^1]:Bernstein Footnotes 
+### Bernstein Footnotes 
 
 Companion documents from the same author:
 
