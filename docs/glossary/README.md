@@ -16,7 +16,7 @@
 |                            |                                                                                                     |
 | Python3.15                 | https://docs.python.org/3/                                                                          |
 | addHandler                 | https://docs.python.org/3/library/logging.html#logging.Logger.addHandler                            |
-| Exceptions                 | https://docs.python.org/3/reference/executionmodel.html#exceptions                                  |
+| exceptions                 | https://docs.python.org/3/builtins/exceptions.html                                                  |
 | getLogger                  | https://docs.python.org/3/library/logging.html#logging.getLogger                                    |
 | _handler                   | https://docs.python.org/3/library/logging.html#logging.Handler                                      |
 | handlers                   | https://docs.python.org/3/library/logging.handlers.html#module-logging.handlers                     |
