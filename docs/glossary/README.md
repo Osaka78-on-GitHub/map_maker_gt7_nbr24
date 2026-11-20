@@ -19,12 +19,13 @@
 | getLogger                  | https://docs.python.org/3/library/logging.html#logging.getLogger                                    |
 | _handler                   | https://docs.python.org/3/library/logging.html#logging.Handler                                      |
 | handlers                   | https://docs.python.org/3/library/logging.handlers.html#module-logging.handlers                     |
+| INFO                       | https://docs.python.org/3/library/logging.html#levels                                               |
 | logger                     | https://docs.python.org/release/3.1.5/library/logging.html                                          |
 | logger                     | https://docs.python.org/3/library/logging.html#logging.Logger                                       |
 | logging                    | https://docs.python.org/3/library/logging.html                                                      |
 | propogate                  | https://docs.python.org/3/library/logging.html#logging.Logger.propagate                             |
+| raise                      | https://docs.python.org/3/reference/simple_stmts.html#the-raise-statement                           |
 | StreamHandler              | https://docs.python.org/3/library/logging.handlers.html#streamhandler                               |
-| INFO                       | https://docs.python.org/3/library/logging.html#levels                                               |
 |                            |                                                                                                     |
 | TC39                       | https://tc39.es/ecma262                                                                             |
 | !                          | https://tc39.es/ecma262/#sec-logical-not-operator                                                   |
