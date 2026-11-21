@@ -7,6 +7,7 @@
 | `296`         | Byte size of heartbeat A packet                                              |
 | `316`         | Byte size of heartbeat B packet                                              |
 | `344`         | Byte size of heartbeat ~ packet                                              |
+| `368`         | Byte size of heartbeat C packet                                              |
 | `[0x40:0x44]` | Byte offset in GT7 datagram where the 4-byte seed lives                      |
 | `little`      | Little-endian byte order; spec function `littleendian(b₀..b₃)`               |
 | `mask`        | GT7-internal XOR value applied to seed; not in Salsa20 spec                  |
