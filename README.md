@@ -4,21 +4,23 @@ Designed with assistance from the Brave Search AI assistant.
 
 # Map Maker GT7 NBR24
 
-Dual-panel map editor for annotating the Nürburgring (Nordschleife) using
-Rheinland-Pfalz DOP20 aerial imagery. Built with Leaflet + Geoman.
+Map for Nürburgring using beautiful
+Rheinland-Pfalz DOP20 aerial imagery.
 
 ## Demo
 https://osaka78-on-github.github.io/map_maker_gt7_nbr24/
 
-## Files
+## Notable
 
-| File          | Purpose       | Method               |
+| File          | Function      | Method               |
 |:--------------|:--------------|:---------------------|
-| `index.html`  | Map Maker     | web browser          |
-| `bridge.py`   | GT7 Telemetry | Salsa20 to WebSocket |
-| `config.json` | Cofiguration  | PlayStation IP       |
+| `demo url`    | Map           | Standard browser     |
+| `SIPxGT7`     | CLI           | Python3.15           |
+| `main.py`     | GT7 Telemetry | Salsa20 to WebSocket |
+| `config.py`   | User config   | PlayStation IP       |
+| `cloudflare`  | Signal server | WebRTC pipe          |
 
-## Map Editor
+## Map Maker
 
 
 
@@ -32,43 +34,42 @@ https://osaka78-on-github.github.io/map_maker_gt7_nbr24/
 
 
 
-## Telemetry Bridge (local machine only)
+## SIPxGT7
+CLI for 'Simulator Interface Packet GT7 ver 0.0'
 
-Receives GT7 telemetry via UDP and streams it to the map as a live car dot.
+WIP Prints raw GT7 telemetry.
 
-### Requirements
-salsa20 and websockets   
+   
 
 
 
 ### Config
-Edit config.json with your console IP(s). Leave the IP empty (or omit the line) for consoles you don't have.
+Add your PlayStation(s) to config.py.
 
 ### Use
-1. Start bridge.py in a terminal
+1. Start main.py in terminal
 ```
-python3.15 bridge.py   
+python3.15 main.py   
 ```
 
 
 
 3. Start GT7 on the PS5/PS4
-4. A yellow dot (PS5) or cyan dot (PS4) + trail appears on the aerial panel
+4. Your telem on map WIP
 
-### Requirements
-Console on the same LAN as the machine running bridge.py
-GT7 running (telemetry only sends while in-game)
+### Minimum Requirements
+PlayStation, GT7 and SIPxGT7 on same LAN
+(Tested on PS4, PS5, GT7 1.72, Ubuntu22, Python3.15 and Vivaldi)
 
 
 ## Credits
 | What    | Who  | License  | Where  |
 |:------  |:-----|:---------|:-------|
-| Leaflet | Vladimir Agafonkin + contributors | BSD-2 | leafletjs.com |
-| Geoman (leaflet-geoman-free) | geoman-io team | MIT | github.com/geoman-io/leaflet-geoman-free |
-| `salsa20` (Python) | — | — | PyPI |
-| `websockets` (Python) | Aymeric Augustin + contributors | BSD-3 | github.com/aa1000/pywebsockets |
-| `tomli` (Python) | Taneli Hukkinen | MIT | github.com/hukkin/tomli |
-| PySceneDetect | Bruce West + contributors | BSD-3 | github.com/BruceDLight/Scenedetect |
+| `GT7` | Kaz | PD | [gran-turismo.com](https://www.gran-turismo.com) |
+| `Leaflet` | Vladimir Agafonkin + contributors | BSD-2 | leafletjs.com |
+| `Geoman` | geoman-io team | MIT | github.com/geoman-io/leaflet-geoman-free |
+| `Salsa20` | Daniel J. Bernstein | — | [Salsa20 Specification (2005)](https://cr.yp.to/snuffle/spec.pdf)  |
+| `websockets`  | Aymeric Augustin + contributors | BSD-3 | github.com/aa1000/pywebsockets |
 
 GT7 telemetry protocol (the decryption logic in bridge.py):
 
@@ -87,7 +88,6 @@ This is the big one. The Salsa20 key, packet sizes (296/316/344), IV masks (0xDE
 
 - [Leaflet](https://leafletjs.com/) — BSD-2
 - [Geoman](https://github.com/geoman-io/leaflet-geoman-free) — MIT
-- [PySceneDetect](https://github.com/BruceDLight/Scenedetect) — BSD-3
 - GT7 UDP telemetry protocol — reverse-engineered by [Nenkai](https://github.com/Nenkai/PDTools), Bornhall, [MacManley](https://github.com/MacManley/gt7-udp), tarnheld, vwhitteron, Chi-Ho, Beregoz, and others. See [GTPlanet thread](https://www.gtplanet.net/forum/threads/gt7-is-compatible-with-motion-rig.410728/).
 - DOP20 imagery — [Rheinland-Pfalz Geoportal](https://www.geoportal.rlp.de)
 - Map editor designed with assistance from the Brave Search AI assistant   
