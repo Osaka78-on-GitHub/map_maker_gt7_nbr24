@@ -24,18 +24,18 @@ https://osaka78-on-github.github.io/map_maker_gt7_nbr24/
 
 
 
-- **Left panel:** OSM road map (toggle with "OSM" button)
-- **Right panel:** DOP20 aerial (Rheinland-Pfalz Geoportal WMS)
+- **Left panel:** OSM base map (toggle with "OSM" button)
+- **Right panel:** DOP20 aerial photography (Rheinland-Pfalz Geoportal WMS)
 - **Draw/edit:** Geoman toolbar (top-left of aerial panel)
-- **Tags:** "Tags" button opens a panel to add/edit key=value tags per feature
+- **Tags:** "Tags" button opens a panel to add/edit key=value tags per feature.
 - **Persistence:** All edits auto-save to browser localStorage. Open the page
   later and your work is still there.
-- **Export:** "Export" button downloads a GeoJSON file (importable into uMap)
+- **Export:** "Export" button downloads a GeoJSON file.
 
 
 
 ## SIPxGT7
-CLI for 'Simulator Interface Packet GT7 ver 0.0'
+CLI for "Simulator Interface Packet GT7 ver 0.0."
 
 WIP Prints raw GT7 telemetry.
 
@@ -47,42 +47,48 @@ WIP Prints raw GT7 telemetry.
 Add your PlayStation(s) to config.py.
 
 ### Use
-1. Start main.py in terminal
+1. Run main.py in terminal
 ```
 python3.15 main.py   
 ```
 
 
 
-3. Start GT7 on the PS5/PS4
+3. Start GT7
 4. Your telem on map WIP
 
 ### Minimum Requirements
 PlayStation, GT7 and SIPxGT7 on same LAN
-(Tested on PS4, PS5, GT7 1.72, Ubuntu22, Python3.15 and Vivaldi)
+(Tested on GT7 1.72, PS4, PS5, Ubuntu22, Python3.15 and Vivaldi)
 
 
 ## Credits
-| What    | Who  | License  | Where  |
-|:------  |:-----|:---------|:-------|
-| `GT7` | Kaz | PD | [gran-turismo.com](https://www.gran-turismo.com) |
-| `Leaflet` | Vladimir Agafonkin + contributors | BSD-2 | leafletjs.com |
-| `Geoman` | geoman-io team | MIT | github.com/geoman-io/leaflet-geoman-free |
-| `Salsa20` | Daniel J. Bernstein | — | [Salsa20 Specification (2005)](https://cr.yp.to/snuffle/spec.pdf)  |
-| `websockets`  | Aymeric Augustin + contributors | BSD-3 | github.com/aa1000/pywebsockets |
+| What         | Who                               | License | Where                                                             |
+| ------------ | --------------------------------- | ------- | :---------------------------------------------------------------- |
+| `GT7`        | Kaz                               | PD      | [gran-turismo.com](https://www.gran-turismo.com)                  |
+| `Leaflet`    | Vladimir Agafonkin + contributors | BSD-2   | leafletjs.com                                                     |
+| `Geoman`     | geoman-io team                    | MIT     | github.com/geoman-io/leaflet-geoman-free                          |
+| `Salsa20`    | Daniel J. Bernstein               | —       | [Salsa20 Specification (2005)](https://cr.yp.to/snuffle/spec.pdf) |
+| `websockets` | Aymeric Augustin + contributors   | BSD-3   | github.com/aa1000/pywebsockets                                    |
+
+
 
 GT7 telemetry protocol (the decryption logic in bridge.py):
 
 This is the big one. The Salsa20 key, packet sizes (296/316/344), IV masks (0xDEADBEAF / 0xDEADBEEF / 0x55FABB4F), field offsets, and magic number were all reverse-engineered by the community:
-| Who | What they did |
-|-----|---------------|
-| **Nenkai** | Originally discovered GT7's hidden UDP telemetry, published PDTools (MIT) |
-| **Bornhall** | Reverse-engineered the full protocol details (key, nonce derivation, all field offsets) |
-| **MacManley** | Wrote gt7-udp (MIT) — well-documented reference implementation covering all 3 packet types |
-| **tarnheld** | Contributed to packet documentation on GTPlanet |
-| **vwhitteron** | gt-telemetry library, helped document packet variant C |
-| **Chi-Ho, Beregoz** | Helped research packet variant C |
-| **ddm999** | Car and manufacturer ID database (gt7info) |
+| Who                 | What they did                                                                              |
+| ------------------- | ------------------------------------------------------------------------------------------ |
+| **Nenkai**          | Originally discovered GT7's hidden UDP telemetry, published PDTools (MIT)                  |
+| **Bornhall**        | Reverse-engineered the full protocol details (key, nonce derivation, all field offsets)    |
+| **MacManley**       | Wrote gt7-udp (MIT) — well-documented reference implementation covering all 3 packet types |
+| **tarnheld**        | Contributed to packet documentation on GTPlanet                                            |
+| **vwhitteron**      | gt-telemetry library, helped document packet variant C                                     |
+| **Chi-Ho, Beregoz** | Helped research packet variant C                                                           |
+| **ddm999**          | Car and manufacturer ID database (gt7info)                                                 |
+| **GT Planet**       | Gave us a place to talk [GTPlanet](https://www.gtplanet.net)                                              |
+
+
+
 
 ## Credits
 
