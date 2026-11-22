@@ -79,29 +79,25 @@ PlayStation, GT7 and SIPxGT7 on same LAN
 GT7 telemetry protocol (the decryption logic in bridge.py):
 
 This is the big one. The Salsa20 key, packet sizes (296/316/344), IV masks (0xDEADBEAF / 0xDEADBEEF / 0x55FABB4F), field offsets, and magic number were all reverse-engineered by the community:
-| Who                 | What they did                                                                              |
-| ------------------- | ------------------------------------------------------------------------------------------ |
-| **Nenkai**          | Originally discovered GT7's hidden UDP telemetry, published [PDTools](https://github.com/Nenkai/PDTools) (MIT)                  |
-| **Bornhall**        | Reverse-engineered the full protocol details (key, nonce derivation, all field offsets)    |
+| Who                 | What they did                                                                                                                      |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| **Nenkai**          | Originally discovered GT7's hidden UDP telemetry, published [PDTools](https://github.com/Nenkai/PDTools) (MIT)                     |
+| **Bornhall**        | Reverse-engineered the full protocol details (key, nonce derivation, all field offsets)                                            |
 | **MacManley**       | Wrote [gt7-udp](https://github.com/MacManley/gt7-udp) (MIT) — well-documented reference implementation covering all 3 packet types |
-| **tarnheld**        | Contributed to packet documentation on GTPlanet                                            |
-| **vwhitteron**      | gt-telemetry library, helped document packet variant C                                     |
-| **Chi-Ho, Beregoz** | Helped research packet variant C                                                           |
-| **ddm999**          | Car and manufacturer ID database (gt7info)                                                 |
-| **GT Planet**       | Gave us a place to talk [GTPlanet](https://www.gtplanet.net)                                              |
+| **tarnheld**        | Contributed to packet documentation on GTPlanet                                                                                    |
+| **vwhitteron**      | gt-telemetry library, helped document packet variant C                                                                             |
+| **Chi-Ho, Beregoz** | Helped research packet variant C                                                                                                   |
+| **ddm999**          | Car and manufacturer ID database (gt7info)                                                                                         |
+| **GT Planet**       | Gave us a place to talk [GTPlanet](https://www.gtplanet.net)                                                                       |
 
 
 
 
-## Credits
+## Other credits
 
--  — BSD-2
--  — MIT
-- , Bornhall, , tarnheld, vwhitteron, Chi-Ho, Beregoz, and others. See [GTPlanet thread](https://www.gtplanet.net/forum/threads/gt7-is-compatible-with-motion-rig.410728/).
-- 
-- Map editor designed with assistance from the Brave Search AI assistant   
+|                |                                                                                 |
+| -------------- | ------------------------------------------------------------------------------- |
+| Dual Maps Free | Years of inspiration. Thank you [Map Channels](https://dualmaps.com/opensource) |
 
-| What | Who |
-|------|-----|
-| DOP20 aerial imagery | State of :inlineEntity{type="inline_entity" conversation="09c5027d81fb71cdeb2681a4af1ec3e94920" name="Rheinland-Pfalz" about="German&#32;state" nonce="39e4f213f270cec83c49da035d624aa0" sig="ed1766ac99d11b46c3ba68c1c51f7113f9172dc041b4978c98e123d52db4f2d8"} Geoportal (government, freely available) |
-| OSM road data | OpenStreetMap contributors |
+
+# LET THERE BE LIGHT
