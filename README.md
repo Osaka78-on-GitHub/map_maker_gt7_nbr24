@@ -16,7 +16,7 @@ https://osaka78-on-github.github.io/map_maker_gt7_nbr24/
 |:--------------|:--------------|:---------------------|
 | `demo url`    | Map           | Standard browser     |
 | `SIPxGT7`     | CLI           | Python3.15           |
-| `main.py`     | GT7 Telemetry | Salsa20 to WebSocket |
+| `main.py`     | GT7 Telemetry | write to file        |
 | `config.py`   | User config   | PlayStation IP       |
 | `cloudflare`  | Signal server | WebRTC pipe          |
 
@@ -63,24 +63,27 @@ PlayStation, GT7 and SIPxGT7 on same LAN
 
 
 ## Credits
-| What         | Who                               | License | Where                                                             |
-| ------------ | --------------------------------- | ------- | :---------------------------------------------------------------- |
-| `GT7`        | Kaz                               | PD      | [gran-turismo.com](https://www.gran-turismo.com)                  |
-| `Leaflet`    | Vladimir Agafonkin + contributors | BSD-2   | leafletjs.com                                                     |
-| `Geoman`     | geoman-io team                    | MIT     | github.com/geoman-io/leaflet-geoman-free                          |
-| `Salsa20`    | Daniel J. Bernstein               | —       | [Salsa20 Specification (2005)](https://cr.yp.to/snuffle/spec.pdf) |
-| `websockets` | Aymeric Augustin + contributors   | BSD-3   | github.com/aa1000/pywebsockets                                    |
-
-
+| What            | Who                       | License | Where                                                                                                         |
+| --------------- | ------------------------- | ------- | ------------------------------------------------------------------------------------------------------------- |
+| `GT7`           | Kaz                       | PD      | [gran-turismo.com](https://www.gran-turismo.com)                                                              |
+| `Ask Brave`     | Brendan Eich              | Brave   | https://api-dashboard.search.brave.com/terms-of-service                                                       |
+| `Leaflet`       | Vladimir Agafonkin        | BSD-2   | [Leaflet](https://leafletjs.com/)                                                                             |
+| `Geoman`        | geoman-io team            | MIT     | [Geoman](https://github.com/geoman-io/leaflet-geoman-free)                                                    |
+| `Salsa20`       | Daniel J. Bernstein       | —       | [Salsa20 Specification (2005)](https://cr.yp.to/snuffle/spec.pdf)                                             |
+| `webRTC`        | Ian Hickson               | W3C     | https://www.w3.org/TR/webrtc/                                                                                 |
+| `Python`        | Guido van Rossum          | BSD     | https://docs.python.org/3/license.html                                                                        |
+| `Cloudflare`    | Cloudflare                | CCSA4.0 | [Cloudflare licence](https://developers.cloudflare.com/fundamentals/reference/policies-compliances/licenses/) |
+| `OSM`           | Steve Coast               | ODbL    | https://www.openstreetmap.org/copyright                                                                       |
+| `DOP20 imagery` | Rheinland-Pfalz Geoportal | DLDE2.0 | https://www.geoportal.rlp.de                                                                                  | 
 
 GT7 telemetry protocol (the decryption logic in bridge.py):
 
 This is the big one. The Salsa20 key, packet sizes (296/316/344), IV masks (0xDEADBEAF / 0xDEADBEEF / 0x55FABB4F), field offsets, and magic number were all reverse-engineered by the community:
 | Who                 | What they did                                                                              |
 | ------------------- | ------------------------------------------------------------------------------------------ |
-| **Nenkai**          | Originally discovered GT7's hidden UDP telemetry, published PDTools (MIT)                  |
+| **Nenkai**          | Originally discovered GT7's hidden UDP telemetry, published [PDTools](https://github.com/Nenkai/PDTools) (MIT)                  |
 | **Bornhall**        | Reverse-engineered the full protocol details (key, nonce derivation, all field offsets)    |
-| **MacManley**       | Wrote gt7-udp (MIT) — well-documented reference implementation covering all 3 packet types |
+| **MacManley**       | Wrote [gt7-udp](https://github.com/MacManley/gt7-udp) (MIT) — well-documented reference implementation covering all 3 packet types |
 | **tarnheld**        | Contributed to packet documentation on GTPlanet                                            |
 | **vwhitteron**      | gt-telemetry library, helped document packet variant C                                     |
 | **Chi-Ho, Beregoz** | Helped research packet variant C                                                           |
@@ -92,10 +95,10 @@ This is the big one. The Salsa20 key, packet sizes (296/316/344), IV masks (0xDE
 
 ## Credits
 
-- [Leaflet](https://leafletjs.com/) — BSD-2
-- [Geoman](https://github.com/geoman-io/leaflet-geoman-free) — MIT
-- GT7 UDP telemetry protocol — reverse-engineered by [Nenkai](https://github.com/Nenkai/PDTools), Bornhall, [MacManley](https://github.com/MacManley/gt7-udp), tarnheld, vwhitteron, Chi-Ho, Beregoz, and others. See [GTPlanet thread](https://www.gtplanet.net/forum/threads/gt7-is-compatible-with-motion-rig.410728/).
-- DOP20 imagery — [Rheinland-Pfalz Geoportal](https://www.geoportal.rlp.de)
+-  — BSD-2
+-  — MIT
+- , Bornhall, , tarnheld, vwhitteron, Chi-Ho, Beregoz, and others. See [GTPlanet thread](https://www.gtplanet.net/forum/threads/gt7-is-compatible-with-motion-rig.410728/).
+- 
 - Map editor designed with assistance from the Brave Search AI assistant   
 
 | What | Who |
