@@ -7,8 +7,7 @@ logger.setLevel(logging.INFO)
 _handler = logging.StreamHandler()
 logger.addHandler(_handler)
 logger.propagate = False
-def terminal_wipe():
-  print("\r\033[K", end="", flush=True)
+
 
 def msg_body(msg,whoami=True):
   if whoami == True:
