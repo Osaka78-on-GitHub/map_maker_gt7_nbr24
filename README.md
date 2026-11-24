@@ -82,13 +82,14 @@ This is the big one. The Salsa20 key, packet sizes (296/316/344), IV masks (0xDE
 | Who                 | What they did                                                                                                                      |
 | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
 | **Nenkai**          | Originally discovered GT7's hidden UDP telemetry, published [PDTools](https://github.com/Nenkai/PDTools) (MIT)                     |
-| **Bornhall**        | Reverse-engineered the full protocol details (key, nonce derivation, all field offsets)                                            |
+| **Bornhall**        | Built many tools such as this beauty: [gt7telemetry](https://github.com/Bornhall/gt7telemetry)                                     |
 | **MacManley**       | Wrote [gt7-udp](https://github.com/MacManley/gt7-udp) (MIT) — well-documented reference implementation covering all 3 packet types |
 | **tarnheld**        | Contributed to packet documentation on GTPlanet                                                                                    |
 | **vwhitteron**      | gt-telemetry library, helped document packet variant C                                                                             |
 | **Chi-Ho, Beregoz** | Helped research packet variant C                                                                                                   |
 | **ddm999**          | Car and manufacturer ID database (gt7info)                                                                                         |
-| **GT Planet**       | Gave us a place to talk [GTPlanet](https://www.gtplanet.net)                                                                       |
+| **MoebiusX**        | [Minimal Java Script Salsa20 stream cipher](https://github.com/MoebiusX/gt7-telemetry-analyzer/blob/main/src/capture/salsa20.js)   |
+| **GT Planet**       | Gave us a place to talk [GTPlanet.net](https://www.gtplanet.net)                                                                   |
 
 
 
