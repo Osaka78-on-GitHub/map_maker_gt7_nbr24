@@ -4,7 +4,7 @@ Designed with assistance from the Brave Search AI assistant.
 
 # Map Maker GT7 NBR24
 
-Map for Nürburgring using beautiful
+Map for Gran Turismo 7 Nürburgring layout using beautiful
 Rheinland-Pfalz DOP20 aerial imagery.
 
 ## Demo
