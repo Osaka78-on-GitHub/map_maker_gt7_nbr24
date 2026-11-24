@@ -7,11 +7,12 @@ logger.setLevel(logging.INFO)
 _handler = logging.StreamHandler()
 logger.addHandler(_handler)
 logger.propagate = False
-
+def terminal_wipe():
+  print("\r\033[K", end="", flush=True)
 
 def msg_body(msg,whoami=True):
   if whoami == True:
-    logger.info("[%s] %s %s %s %s",
+    logger.info("[ %s ] %s %s %s %s",
     funcname(depth=2),
     modulename(depth=3),
     funcname(depth=4),
@@ -32,6 +33,7 @@ def INFO(msg=None): msg_body(msg)
 def PASS(msg=None): msg_body(msg)
 def STOP(msg=None): msg_body(msg)
 def TEST(msg=None): msg_body(msg)
+def DBUG(msg=None): msg_body(msg)
 """
 Footnotes:
 WIP:
