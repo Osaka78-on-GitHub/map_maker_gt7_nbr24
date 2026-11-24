@@ -1,28 +1,36 @@
 # WIP milestone
 
-## get SIP raw is done
+## new status system
 
 archive #folder dump for WIP milestones
 
-async def decryt(SIP_raw):
+async def HB_send(HB, HB_port, PS_list, PS_socket):
 
-async def get_telemetry(PS_socket, SIP_size):
+async def main():
 
-async def heartbeat(HB, PlayStation, PS_socket):
+async def SIP_decryt(SIP_raw):
 
-b #bytes
+async def SIP_get_raw(PS_socket, SIP_size):
 
 bridge.py #working title
 
 config.py #user configuration, blank for github
 
+def blank():
+
+def DBUG(msg=None): msg_body(msg)
+
 def FAIL(msg=None): msg_body(msg)
 
 def funcname(depth=1):
 
-def get_ip():
+def get_addr():
 
 def get_socket(SIP_port):
+
+def GOOD(SIP_raw):
+
+def IDLE():
 
 def INFO(msg=None): msg_body(msg)
 
@@ -36,7 +44,7 @@ def msg_body(msg,whoami=True):
 
 def PASS(msg=None): msg_body(msg)
 
-def ping(PS_list):
+def raw(SIP_raw):
 
 def shutdown():
 
@@ -48,11 +56,15 @@ def TEST(msg=None): msg_body(msg)
 
 depth=1 #notify gets modulename funcname etc
 
-from config import PlayStation
+from config import PlayStations
 
 from Crypto.Cipher import Salsa20
 
+_handler = logging.FileHandler('tmp', mode='w')
+
 _handler = logging.StreamHandler() #notify msg printing
+
+HB = 'A'
 
 HB_A = 'A'
 
@@ -78,15 +90,25 @@ import SIPx
 
 import socket
 
-import subprocess
+import status
 
 import sys
 
+ip
+
 ip #PlayStation ip address
+
+iv1 = int.from_bytes(SIP_raw[0x40:0x44], "little")
+
+iv2 = iv1 ^ mask
 
 key = b"Simulator Interface Packet GT7 ver 0.0"[:32]
 
 logger = logging.getLogger("notify")
+
+logger = logging.getLogger('status')
+
+logger.propagate = False
 
 loop = asyncio.get_event_loop()
 
@@ -96,17 +118,31 @@ msg #generic name for message
 
 names #file
 
+nonce += iv1.to_bytes(4,"little")
+
+nonce = iv2.to_bytes(4,"little")
+
 notify.py
 
 octet = ip.split('.') #math term used in bridge.is_ip
 
+PlayStations
+
 PS_addr #return address (source_ip, source_port).
 
+PS = get_addr()
+
 PS_list #list from config.py, presumably PlayStation(s)
+
+PS_name
 
 PS_name, ip in PlayStation
 
 PS_name, ip in PS_list:
+
+PS_port = 33740
+
+PS_socket = bridge.get_socket(PS_port)
 
 PS_socket #socket for PlayStation(s)
 
@@ -144,9 +180,12 @@ SIPx.py
 
 s #socket
 
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+status.py
+
 tmp #file
 
 whoami=True #True/False toggle for notify message body
 
 x #throwaway variable name
-
