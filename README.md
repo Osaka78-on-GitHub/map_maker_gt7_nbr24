@@ -35,16 +35,16 @@ https://osaka78-on-github.github.io/map_maker_gt7_nbr24/
 
 
 ## SIPxGT7
-CLI for "Simulator Interface Packet GT7 ver 0.0."
+CLI for 'Simulator Interface Packet GT7 ver 0.0.'
 
-WIP Prints raw GT7 telemetry.
+
 
    
 
 
 
 ### Config
-Add your PlayStation(s) to config.py.
+Add your PlayStation(s) to `config.py`
 
 ### Use
 1. Run main.py in terminal
@@ -52,14 +52,13 @@ Add your PlayStation(s) to config.py.
 python3.15 main.py   
 ```
 
+2. CLI will notify you what it's doing and report status
 
-
-3. Start GT7
-4. Your telem on map WIP
+3. SIPxGT7 writes SIP raw packet to `SIP_raw` file.
 
 ### Minimum Requirements
 PlayStation, GT7 and SIPxGT7 on same LAN
-(Tested on GT7 1.72, PS4, PS5, Ubuntu22, Python3.15 and Vivaldi)
+(Tested on GT7 1.72, PS4, PS5, Ubuntu22, Python3.15)
 
 
 ## Credits
@@ -76,20 +75,20 @@ PlayStation, GT7 and SIPxGT7 on same LAN
 | `OSM`           | Steve Coast               | ODbL    | https://www.openstreetmap.org/copyright                                                                       |
 | `DOP20 imagery` | Rheinland-Pfalz Geoportal | DLDE2.0 | https://www.geoportal.rlp.de                                                                                  | 
 
-GT7 telemetry protocol (the decryption logic in bridge.py):
+## Credits for Decoding the 'Simulator Interface Packet GT7 ver 0.0'
 
-This is the big one. The Salsa20 key, packet sizes (296/316/344), IV masks (0xDEADBEAF / 0xDEADBEEF / 0x55FABB4F), field offsets, and magic number were all reverse-engineered by the community:
+This is the big one. The Salsa20 key, packet sizes, masks (0xDEADBEAF / 0xDEADBEEF / 0x55FABB4F), field offsets, and magic number were all reverse-engineered by the Gran Turismo community. God bless you, one and all:
 | Who                 | What they did                                                                                                                                |
-| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------           |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Nenkai**          | Originally discovered GT7's hidden UDP telemetry, published [PDTools](https://github.com/Nenkai/PDTools) (MIT)                               |
-| **Bornhall**        | Built many tools such as this beauty: [gt7telemetry](https://github.com/Bornhall/gt7telemetry)                                               |
+| **Bornhall**        | Built many tools such as this beauty: [gt7telemetry](https://github.com/Bornhall/gt7telemetry) (GNU)                                         |
 | **MacManley**       | Wrote [gt7-udp](https://github.com/MacManley/gt7-udp) (MIT) — well-documented reference implementation covering all 3 packet types           |
-| **vwhitteron**      | Much input into development of tools for SIP, most notably: [gt-telemetry](https://github.com/zetetos/gt-telemetry)                          |
-| **tarnheld**        | [GT7 is compatible with motion rig ?](https://www.gtplanet.net/forum/threads/gt7-is-compatible-with-motion-rig.410728/page-4#post-13799643)  |
+| **vwhitteron**      | Much input into development of tools for SIP, most notably: [gt-telemetry](https://github.com/zetetos/gt-telemetry) (MIT)                    |
+| **ddm999**          | GT7 Online Dealerships & Info: [gt7info](https://ddm999.github.io/gt7info/)                                                                  |
 | **snimat**          | [Overview of GT7 Telemetry Software](https://www.gtplanet.net/forum/threads/overview-of-gt7-telemetry-software.418011/)                      |
+| **tarnheld**        | [GT7 is compatible with motion rig ?](https://www.gtplanet.net/forum/threads/gt7-is-compatible-with-motion-rig.410728/page-4#post-13799643)  |
 | **Chi-Ho**          | Feature: "C" telemetry format discovered: [Missing bytes](https://github.com/Nenkai/PDTools/issues/18#issuecomment-4105783379)               |
 | **Beregoz**         | Feature: "C" telemetry format discovered: [Surfaces](https://github.com/Nenkai/PDTools/issues/18#issuecomment-4156683754)                    |
-| **ddm999**          | GT7 Online Dealerships & Info: [gt7info](https://ddm999.github.io/gt7info/)                                                                  |
 | **MoebiusX**        | [Minimal Java Script Salsa20 stream cipher](https://github.com/MoebiusX/gt7-telemetry-analyzer/blob/main/src/capture/salsa20.js)             |
 | **GT Planet**       | Gave us a place to talk [GTPlanet.net](https://www.gtplanet.net)                                                                             |
 
