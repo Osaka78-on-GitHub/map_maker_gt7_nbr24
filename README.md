@@ -79,18 +79,19 @@ PlayStation, GT7 and SIPxGT7 on same LAN
 GT7 telemetry protocol (the decryption logic in bridge.py):
 
 This is the big one. The Salsa20 key, packet sizes (296/316/344), IV masks (0xDEADBEAF / 0xDEADBEEF / 0x55FABB4F), field offsets, and magic number were all reverse-engineered by the community:
-| Who                 | What they did                                                                                                                      |
-| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| **Nenkai**          | Originally discovered GT7's hidden UDP telemetry, published [PDTools](https://github.com/Nenkai/PDTools) (MIT)                     |
-| **Bornhall**        | Built many tools such as this beauty: [gt7telemetry](https://github.com/Bornhall/gt7telemetry)                                     |
-| **MacManley**       | Wrote [gt7-udp](https://github.com/MacManley/gt7-udp) (MIT) — well-documented reference implementation covering all 3 packet types |
-| **tarnheld**        | Contributed to packet documentation on GTPlanet                                                                                    |
-| **vwhitteron**      | gt-telemetry library, helped document packet variant C                                                                             |
-| **Chi-Ho, Beregoz** | Helped research packet variant C                                                                                                   |
-| **ddm999**          | Car and manufacturer ID database (gt7info)                                                                                         |
-| **MoebiusX**        | [Minimal Java Script Salsa20 stream cipher](https://github.com/MoebiusX/gt7-telemetry-analyzer/blob/main/src/capture/salsa20.js)   |
-| **GT Planet**       | Gave us a place to talk [GTPlanet.net](https://www.gtplanet.net)                                                                   |
-
+| Who                 | What they did                                                                                                                                |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------           |
+| **Nenkai**          | Originally discovered GT7's hidden UDP telemetry, published [PDTools](https://github.com/Nenkai/PDTools) (MIT)                               |
+| **Bornhall**        | Built many tools such as this beauty: [gt7telemetry](https://github.com/Bornhall/gt7telemetry)                                               |
+| **MacManley**       | Wrote [gt7-udp](https://github.com/MacManley/gt7-udp) (MIT) — well-documented reference implementation covering all 3 packet types           |
+| **vwhitteron**      | Much input into development of tools for SIP, most notably: [gt-telemetry](https://github.com/zetetos/gt-telemetry)                          |
+| **tarnheld**        | [GT7 is compatible with motion rig ?](https://www.gtplanet.net/forum/threads/gt7-is-compatible-with-motion-rig.410728/page-4#post-13799643)  |
+| **snimat**          | [Overview of GT7 Telemetry Software](https://www.gtplanet.net/forum/threads/overview-of-gt7-telemetry-software.418011/)                      |
+| **Chi-Ho**          | Feature: "C" telemetry format discovered: [Missing bytes](https://github.com/Nenkai/PDTools/issues/18#issuecomment-4105783379)               |
+| **Beregoz**         | Feature: "C" telemetry format discovered: [Surfaces](https://github.com/Nenkai/PDTools/issues/18#issuecomment-4156683754)                    |
+| **ddm999**          | GT7 Online Dealerships & Info: [gt7info](https://ddm999.github.io/gt7info/)                                                                  |
+| **MoebiusX**        | [Minimal Java Script Salsa20 stream cipher](https://github.com/MoebiusX/gt7-telemetry-analyzer/blob/main/src/capture/salsa20.js)             |
+| **GT Planet**       | Gave us a place to talk [GTPlanet.net](https://www.gtplanet.net)                                                                             |
 
 
 
