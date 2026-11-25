@@ -26,6 +26,7 @@
 | logging                    | https://docs.python.org/3/library/logging.html                                                      |
 | propogate                  | https://docs.python.org/3/library/logging.html#logging.Logger.propagate                             |
 | raise                      | https://docs.python.org/3/reference/simple_stmts.html#the-raise-statement                           |
+| recvfrom                   | https://docs.python.org/3/library/socket.html#socket.socket.recvfrom                                |
 | StreamHandler              | https://docs.python.org/3/library/logging.handlers.html#streamhandler                               |
 |                            |                                                                                                     |
 | TC39                       | https://tc39.es/ecma262                                                                             |
