@@ -56,6 +56,8 @@ python3.15 main.py
 
 3. SIPxGT7 writes SIP raw packet to `SIP_raw` file.
 
+4. Ctrl+C to stop SIPxGT7.
+
 ### Minimum Requirements
 PlayStation, GT7 and SIPxGT7 on same LAN
 (Tested on GT7 1.72, PS4, PS5, Ubuntu22, Python3.15)
