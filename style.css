@@ -19,6 +19,15 @@ body {
     color: var(--color_max);    
     display: flex;
 }
+button {
+  background: var(--color_3);
+  border: none;
+  color: inherit;
+  font: inherit;
+  height: 1em;
+  outline: none;
+  padding: 0;
+}
 #panel {
 	background: var(--color_2);
 	display: flex;
