@@ -1,10 +1,14 @@
 # WIP
 # SIPxGT7
-## CLI for 'Simulator Interface Packet GT7 ver 0.0.'
+## SIPxGT7 takes raw 'Simulator Interface Packet GT7 ver 0.0' and writes it to file.
+
 
 ![SIPxGT7 status raw SIP multiple PlayStations](https://raw.githubusercontent.com/Osaka78-on-GitHub/map_maker_gt7_nbr24/main/tools/SIPxGT7/img/SIPxGT7_status_SIPr.gif)
 
-SIPxGT7 is designed to write raw SIP to file
+
+
+
+
 
 ### User Configuration
 Add your PlayStation(s) to `config.py`
