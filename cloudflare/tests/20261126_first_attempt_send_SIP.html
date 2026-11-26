@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<!--
+simple chat website using webrtc
+
+ABREVIATIONS
+cf  cloudflare
+dc  data channel
+e	 event
+pc  peer connection
+s	 string
+su  stun urls
+sdp session description protocol
+w	 websocket
+/-->
+
+<style>
+
+</style>
+<head>
+<title>test-cf-worker-to-webrtc</title>
+<link rel="stylesheet" href="https://osaka78-on-github.github.io/map_maker_gt7_nbr24/style.css">
+</head>
+<body>
+<div
+	id="chat">
+<input
+	id="chat_input"
+	placeholder="type to chat...">
+</input>
+<div
+	id="chat_log">
+</div>
+<script type="module">
+
+// declare
+import { parse as toml_parse } from 'https://esm.sh/smol-toml';   
+const WORKER = 
+	"map-maker-gt7-nbr24.osaka78.workers.dev";
+const ROOM = "websocket";
+// this stun needs to be config not hardcode
+// at least the bilibili
+
+/* old stun setup start
+const pc = new RTCPeerConnection({
+	iceServers: [{
+	urls: [
+	"stun:stun.cloudflare.com:3478",
+	]
+	}]
+});
+
+old stun setup end */
+//brave ai start
+// TEST_20261115_stun_config_absolute_path.html
+const toml_data = await (await fetch('https://Osaka78-on-GitHub.github.io/map_maker_gt7_nbr24/cloudflare/tests/config.toml')).text();
+// TEST_20261115_stun_config_absolute_path.html
+const { stun } = toml_parse(toml_data);
+const stun_list = [...stun.default, ...(stun.user ?? [])];
+const stun_urls = stun_list.filter(su => /^stun:[\w.-]+:\d+$/.test(su));
+const pc = new RTCPeerConnection({ iceServers: [{ urls: stun_urls }] });
+
+//brave ai end
+
+let dc = null;
+function chat_input_autofocus() {
+	document.getElementById("chat_input").focus();
+}
+function websocket_get() {
+	return new WebSocket("wss://" + WORKER + "/" + ROOM);
+}
+// brave start
+const chat_input = document.getElementById(
+"chat_input");
+
+const chat_log = document.getElementById(
+ "chat_log");
+
+chat_input.addEventListener("keydown", (e) => {
+	if (e.key !== "Enter") return;
+	e.preventDefault();
+	const s = chat_input.value.trim();
+	if (!s) return;
+	chat_input.value = "";
+	// display locally
+	const div = document.createElement("div");
+	div.textContent = s;
+	chat_log.appendChild(div);
+	chat_log.scrollTop = chat_log.scrollHeight;
+	// send to other peers
+	if (dc) dc.send(s);
+});  
+function data_in(e) {
+	const div = document.createElement("div");
+	div.textContent = e.data;
+	chat_log.appendChild(div);
+	chat_log.scrollTop = chat_log.scrollHeight;
+}
+// brave end
+// execute
+const w = websocket_get();
+chat_input_autofocus();
+w.onmessage = async (e) => {
+	const msg = JSON.parse(e.data);
+	if (msg.type === "offer") {
+	await pc.setRemoteDescription(
+	new RTCSessionDescription(msg.sdp)
+	);
+	const answer = await pc.createAnswer();
+	await pc.setLocalDescription(answer);
+	w.send(JSON.stringify({
+	type: "answer",
+	sdp: pc.localDescription
+	}));
+	}
+	if (msg.type === "answer") {
+	await pc.setRemoteDescription(
+	new RTCSessionDescription(msg.sdp)
+	);
+	}
+	if (msg.type === "candidate") {
+	await pc.addIceCandidate(
+	new RTCIceCandidate(msg.candidate)
+	);
+	}
+};
+pc.onicecandidate = (e) => {
+	if (!e.candidate) return;
+	w.send(JSON.stringify({
+	type: "candidate",
+	candidate: e.candidate
+	}));
+};
+pc.ondatachannel = (e) => {
+	dc = e.channel;
+	dc.onmessage = data_in;
+};
+setTimeout(async () => {
+	if (dc) return;
+	dc = pc.createDataChannel("t");
+	dc.onmessage = data_in;
+	const offer = await pc.createOffer();
+	await pc.setLocalDescription(offer);
+	w.send(JSON.stringify({
+	type: "offer",
+	sdp: pc.localDescription
+	}));
+}, 1500);
+</script>
+</body>
+</html>
