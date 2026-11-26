@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html>
 <!--
-simple chat website using webrtc
+LIVE test at
+https://osaka78-on-github.github.io/map_maker_gt7_nbr24/cloudflare/tests/20261126_first_attempt_send_SIP.html
+
+first attempt at sending SIP down webrtc pipe
 
 ABREVIATIONS
 cf  cloudflare
@@ -38,20 +41,7 @@ import { parse as toml_parse } from 'https://esm.sh/smol-toml';
 const WORKER = 
 	"map-maker-gt7-nbr24.osaka78.workers.dev";
 const ROOM = "websocket";
-// this stun needs to be config not hardcode
-// at least the bilibili
 
-/* old stun setup start
-const pc = new RTCPeerConnection({
-	iceServers: [{
-	urls: [
-	"stun:stun.cloudflare.com:3478",
-	]
-	}]
-});
-
-old stun setup end */
-//brave ai start
 // TEST_20261115_stun_config_absolute_path.html
 const toml_data = await (await fetch('https://Osaka78-on-GitHub.github.io/map_maker_gt7_nbr24/cloudflare/tests/config.toml')).text();
 // TEST_20261115_stun_config_absolute_path.html
