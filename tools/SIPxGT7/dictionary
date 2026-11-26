@@ -1,0 +1,37 @@
+abbreviation ip    #PlayStation ip address
+abbreviation msg   #generic name for message
+abbreviation s     #socket
+abbreviation x     #throwaway variable name
+abbreviation xf    #throwaway variable for filename
+abbreviation y     #throwaway variable name
+folder archive     #dump for WIP milestones
+file bridge.py     #working title
+file config.py     #user config, blank for github
+file names         #all names used in SIPxGT7
+file tmp           #resusable tmp file
+file main.py       #SIPxGT7 main loop
+file notify.py     #SIPxGT7 notifications
+file SIPx.py       #various SIP tools
+file status.py     #SIPxGT7 status
+folder __pycache__ #python created
+folder archive     #for milestones
+HB = 'A'         #heartbeart for SIP default
+HB = 'B'         #heartbeart for SIP motion
+HB = 'C'         #heartbeart for SIP extended
+HB_port = 33739  #where SIP is requested
+HB = '~'         #heartbeart for SIP misc
+PS_addr          #return address(source_ip, source_port)
+PS_list          #fconfig.py, user PlayStation(s)
+PS_port = 33740  #where SIP is sourced
+SIP_G7S0 = 0x47375330   #so-called Salsa20 magic
+SIP_mask_A = 0xDEADBEAF
+SIP_mask_B = 0xDEADBEEF
+SIP_mask_C = 0x55FABB4F
+SIP_mask_T = 0x55FABB4F
+SIP_plaintext    #plaintext decrypted SIP
+SIP_port         #where SIP is received
+SIP_raw          #raw encrypted SIP straight from GT7
+SIP_size_A = 296 #bytes
+SIP_size_B = 316 #bytes
+SIP_size_C = 368 #bytes
+SIP_size_T = 344 #bytes
