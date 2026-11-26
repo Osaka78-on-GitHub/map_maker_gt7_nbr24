@@ -5,6 +5,8 @@
 
 ![SIPxGT7 status raw SIP multiple PlayStations](https://raw.githubusercontent.com/Osaka78-on-GitHub/map_maker_gt7_nbr24/main/tools/SIPxGT7/img/SIPxGT7_status_SIPr.gif)
 
+*GIF: SIPxGT7 recieving SIP from multiple PlayStations.*
+
 
 
 
