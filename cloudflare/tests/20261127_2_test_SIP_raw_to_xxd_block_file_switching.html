@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<!--
+LIVE test at
+https://osaka78-on-github.github.io/map_maker_gt7_nbr24/cloudflare/tests/20261126_first_attempt_send_SIP.html
+first attempt at sending SIP down webrtc pipe
+ABREVIATIONS
+cf  cloudflare
+dc  data channel
+e   event
+pc  peer connection
+s   string
+su  stun urls
+sdp session description protocol
+w   websocket
+/-->
+<style>
+body {
+  flex-direction: column;
+  overflow: hidden;
+}
+#feeds > div > span {
+  font-size: 1em;
+}
+#header {
+  display: flex;
+}
+#filename {
+  overflow: hidden;
+  margin: 0;
+  font-size: 1em;
+}
+pre {
+  font-family: inherit;
+  overflow: hidden;
+  margin: 0;
+  font-size: 1em;
+}
+
+</style>
+<head>
+<title>test-SIP_raw-to-xxd</title>
+<link rel="stylesheet" href="https://osaka78-on-github.github.io/map_maker_gt7_nbr24/style.css">
+</head>
+<body>
+<div id="header">
+<button id="open-SIP-raw">Open SIP_raw</button>
+</div>
+<div id="feeds"></div>
+<script type="module">
+// declare
+import { parse as toml_parse } from 'https://esm.sh/smol-toml';
+const WORKER = 
+  "map-maker-gt7-nbr24.osaka78.workers.dev";
+const ROOM = "websocket";
+const toml_data = await (await fetch('https://Osaka78-on-GitHub.github.io/map_maker_gt7_nbr24/cloudflare/tests/config.toml')).text();
+const { stun } = toml_parse(toml_data);
+const stun_list = [...stun.default, ...(stun.user ?? [])];
+const stun_urls = stun_list.filter(su => /^stun:[\w.-]+:\d+$/.test(su));
+const pc = new RTCPeerConnection({ iceServers: [{ urls: stun_urls }] });
+let dc = null;
+function websocket_get() {
+  return new WebSocket("wss://" + WORKER + "/" + ROOM);
+}
+const openSIPraw = document.getElementById("open-SIP-raw");
+const xxdOut = document.getElementById("xxd-out");
+openSIPraw.onclick = async () => {
+  const handles = await showOpenFilePicker({ multiple: true });
+  for (const handle of handles) {
+  const file = await handle.getFile();
+  const valid_SIP_size = [296, 316, 344, 368];
+  if (!valid_SIP_size.includes(file.size)) continue;
+  const feeds = document.getElementById("feeds");
+  if ([...feeds.children].some(d => d.querySelector("span").textContent === file.name)) continue;
+  const wrapper = document.createElement("div");
+  const label = document.createElement("span");
+  const space = document.createElement("span");
+  label.textContent = file.name;
+  const pre = document.createElement("pre");
+  const close = document.createElement("button");
+  space.textContent = "\u0020";
+  close.textContent = "x";
+  close.style.cursor = "pointer";
+  close.onclick = () => {
+  clearInterval(wrapper._id);
+  wrapper.remove();
+};   
+  wrapper.appendChild(label);
+  wrapper.appendChild(space);
+  wrapper.appendChild(close);
+  wrapper.appendChild(pre);
+  feeds.appendChild(wrapper);
+  wrapper._id = setInterval(async () => {
+  const f = await handle.getFile();
+  if (!valid_SIP_size.includes(f.size)) {
+  clearInterval(wrapper._id);
+  wrapper.remove();
+  return;
+  }
+  const buf = new Uint8Array(await f.arrayBuffer());
+  pre.textContent = hexdump(buf);
+  }, 17);
+  }
+  sortFeeds();
+};
+function sortFeeds() {
+  const feeds = document.getElementById("feeds");
+  const divs = [...feeds.children];
+  divs.sort((a, b) => a.querySelector("span").textContent.localeCompare(b.querySelector("span").textContent));
+  divs.forEach(el => feeds.appendChild(el));
+}
+function hexdump(bytes) {
+  let s = "";
+  for (let i = 0; i < bytes.length; i += 16) {
+  const hex = Array.from(bytes.slice(i, i + 16))
+  .map(b => b.toString(16).padStart(2, "0")).join(" ");
+  const ascii = Array.from(bytes.slice(i, i + 16))
+  .map(b => b >= 0x20 && b < 0x7f ? String.fromCharCode(b) : ".").join("");
+  s += i.toString(16).padStart(3, "0") + "  " + hex.padEnd(48) + "  " + ascii + "\n";
+  }
+  return s;
+}
+function data_in(e) {
+  const buf = new Uint8Array(e.data);
+  xxdOut.textContent = hexdump(buf);
+}
+const w = websocket_get();
+w.onmessage = async (e) => {
+  const msg = JSON.parse(e.data);
+  if (msg.type === "offer") {
+  await pc.setRemoteDescription(
+  new RTCSessionDescription(msg.sdp)
+  );
+  const answer = await pc.createAnswer();
+  await pc.setLocalDescription(answer);
+  w.send(JSON.stringify({
+  type: "answer",
+  sdp: pc.localDescription
+  }));
+  }
+  if (msg.type === "answer") {
+  await pc.setRemoteDescription(
+  new RTCSessionDescription(msg.sdp)
+  );
+  }
+  if (msg.type === "candidate") {
+  await pc.addIceCandidate(
+  new RTCIceCandidate(msg.candidate)
+  );
+  }
+};
+pc.onicecandidate = (e) => {
+  if (!e.candidate) return;
+  w.send(JSON.stringify({
+  type: "candidate",
+  candidate: e.candidate
+  }));
+};
+pc.ondatachannel = (e) => {
+  dc = e.channel;
+  dc.onmessage = data_in;
+};
+setTimeout(async () => {
+  if (dc) return;
+  dc = pc.createDataChannel("t");
+  dc.onmessage = data_in;
+  const offer = await pc.createOffer();
+  await pc.setLocalDescription(offer);
+  w.send(JSON.stringify({
+  type: "offer",
+  sdp: pc.localDescription
+  }));
+}, 1500);
+</script>
+</body>
+</html>
