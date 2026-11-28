@@ -21,7 +21,7 @@ HB = 'C'         #heartbeart for SIP extended
 HB_port = 33739  #where SIP is requested
 HB = '~'         #heartbeart for SIP misc
 PS_addr          #return address(source_ip, source_port)
-PS_list          #fconfig.py, user PlayStation(s)
+PS_list          #config.py, user PlayStation(s)
 PS_port = 33740  #where SIP is sourced
 SIP_G7S0 = 0x47375330   #so-called Salsa20 magic
 SIP_mask_A = 0xDEADBEAF
