@@ -1,7 +1,11 @@
+and 0 <= int(x) <= 255 for x in octet)
 async def HB_send(HB, HB_port, PS_list, PS_socket)
 async def main()
 async def SIP_decryt(SIP_raw)
 async def SIP_get_raw(PS_socket, SIP_size)
+body = data.decode(errors='replace')
+data, addr = s.recvfrom(512)
+dead = set(in_config) - discovered
 def action(_x, msg)
 def check_config()
 def _do(_x, msg)
@@ -17,15 +21,19 @@ def is_validated(PS_list)
 def modulename(depth=1)
 def msg_body(_x, msg)
 def PASS(_x, msg=None)
+def PS_search()
 def shutdown()
 def SIPr(_x, PS_addr, SIP_raw)
 def SIP_size(HB)
 def STOP(_x, msg=None)
+discovered = set(x)
+extra = discovered - set(in_config)
 file config.py
 file main.py
 file notify.py
 file SIPx.py
 file x.py
+#for PS_name, ip in x
 from config import PlayStations
 from Crypto.Cipher import Salsa20
 from notify import notify
@@ -56,6 +64,7 @@ import socket
 import sys
 import time
 import x
+in_config = {ip for _, ip in PlayStations}
 iv1 = int.from_bytes(SIP_raw[0x40
 iv2 = iv1 ^ mask
 key = b"Simulator Interface Packet GT7 ver 0.0"[
@@ -64,9 +73,16 @@ loop = asyncio.get_event_loop()
 modulename(depth=4),
 nonce += iv1.to_bytes(4,"little")
 nonce = iv2.to_bytes(4,"little")
+notify.FAIL(msg="check config.py")
+notify.FAIL(msg=f"check config.py {PS_name} {ip}")
+notify = _n("notify", logging.StreamHandler())
+#notify.PASS(msg=f"{PS_name} {ip}")
 now = time.perf_counter()
 octet = ip.split('.')
 PlayStations = [ # uncomment for multiple
+print(f"\r\033[13G{xf}", end="", flush=True)
+print(f"\r\033[2K[ {funcname(depth=1)} ]", end="", flush=True)
+print(f"\r\033[2K{x}", end="", flush=True)
 PS = check_config()
 PS_list = x.get_PlayStation()
 PS_name, ip = x[0]
@@ -75,8 +91,10 @@ PS_socket = x.get_socket(PS_port)
 SIP_plaintext = Salsa20.new(key,nonce).decrypt(SIP_raw)
 SIP_raw, PS_addr = await x
 SIP_size = SIPx.SIP_size(HB)
+SRCH = (f"SRCH * HTTP/1.1\ndevice-discovery-protocol-version
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 status = _s("status", logging.FileHandler('tmp'))
+x = []
 xf = f'SIP_raw-{PS_addr}'
 x = f.read()
 x = f.read().strip()
