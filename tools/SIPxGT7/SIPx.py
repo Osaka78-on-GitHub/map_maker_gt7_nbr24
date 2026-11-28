@@ -1,5 +1,5 @@
 import asyncio
-import status
+from notify import status
 async def SIP_decryt(SIP_raw):
   '''Decrypt SIP with Salsa20.'''
   from Crypto.Cipher import Salsa20
@@ -26,10 +26,9 @@ async def SIP_get_raw(PS_socket, SIP_size):
     x = loop.run_in_executor(
     None, PS_socket.recvfrom, SIP_size)
     SIP_raw, PS_addr = await x
-    return PS_addr, SIP_raw
+    if SIP_raw: status.SIPr(PS_addr, SIP_raw)
   except TimeoutError:
     status.INFO("check GT7")
-    pass
 def SIP_size(HB):
   '''SIP size in bytes.'''
   if HB == 'A': x = 296
@@ -51,7 +50,6 @@ async def HB_send(HB, HB_port, PS_list, PS_socket):
       pass
 HB_send.last = 0
 HB_send.rate = 8
-
 
 
 
