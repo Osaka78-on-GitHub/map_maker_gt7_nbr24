@@ -1,13 +1,13 @@
-import notify
+from notify import notify
 import sys
 from config import PlayStations
 
 def get_PlayStation():
-  PS = get_addr()
-  is_valid(PS)
+  PS = check_config()
+  is_validated(PS)
   return PS
 
-def get_addr():
+def check_config():
   x = [ (PS_name, ip) for PS_name, ip in PlayStations ]
   if not x:
     notify.FAIL(msg="check config.py")
@@ -25,7 +25,7 @@ def get_socket(SIP_port):
   s.settimeout(1)
   return s
 
-def is_valid(PS_list):
+def is_validated(PS_list):
   for PS_name, ip in PS_list:
     if not is_ip(ip):
       notify.FAIL(msg=f"{PS_name} {ip}")
@@ -43,5 +43,4 @@ def shutdown():
   print("\n")
   notify.STOP()
   sys.exit()
-
 
